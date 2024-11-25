@@ -1,18 +1,20 @@
-type Field = string;
+type DifficultyType = "beginner" | "easy" | "medium" | "hard" | "extreme";
 
-type GameBoard = Field[][];
+type BoardState = string[][] & { lenght: 15 };
 
-export type Game = {
-    uuid: number;
-    createdAt: string;
-    updatedAt: string;
-    name: string;
-    difficulty: string;
-    gameState?: string;
-    board: GameBoard;
+type GameState = "opening" | "midgame" | "endgame" | "unknown";
+
+export type Error = {
+    code: number,
+    message: string;
 }
 
-export type GamesResponse = {
-    status: string;
-    data: Game[];
+export type Game = {
+    uuid: string,
+    createdAt: number,
+    updatedAt: number,
+    name: string,
+    difficulty: DifficultyType,
+    gameState: GameState,
+    board: BoardState,
 }
