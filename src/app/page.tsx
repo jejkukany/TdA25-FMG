@@ -1,8 +1,5 @@
-import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
-
 export default async function Home() {
-  const data = await db.select().from(users).all();
-  console.log(data);
-  return <div>Hello TdA</div>;
+  const data = await fetch("http://localhost:3000/api/test");
+  const test = await data.json();
+  return <div>Hello TdA {JSON.stringify(test)}</div>;
 }
