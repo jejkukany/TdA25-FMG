@@ -23,9 +23,11 @@ function handleError(error: unknown): string {
 }
 
 export default async function Home() {
-  const apiUrl = `${process.env.URL ?? "https://13682ac4.app.deploy.tourde.app"}/api/test`;
+  // const apiUrl = `${process.env.URL ?? "https://13682ac4.app.deploy.tourde.app"}/api/test`;
   try {
-    const testData = await fetchData(apiUrl);
+    const testData = await fetchData(
+      "https://13682ac4.app.deploy.tourde.app/api/test",
+    );
     return <div>Hello TdA {JSON.stringify(testData)}</div>;
   } catch (error) {
     const errorMessage = handleError(error);
