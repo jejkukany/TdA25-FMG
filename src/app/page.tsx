@@ -23,13 +23,7 @@ function handleError(error: unknown): string {
 }
 
 export default async function Home() {
-  const apiUrl = `${process.env.URL ?? ""}/api/test`;
-
-  if (!process.env.URL) {
-    console.error("Environment variable URL is not set.");
-    return <div>Error: Missing API URL configuration.</div>;
-  }
-
+  const apiUrl = `${process.env.URL ?? "https://13682ac4.app.deploy.tourde.app/"}/api/test`;
   try {
     const testData = await fetchData(apiUrl);
     return <div>Hello TdA {JSON.stringify(testData)}</div>;
