@@ -4,12 +4,15 @@ FROM node:18-bullseye AS base
 # Install dependencies
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN npm install -g pnpm && pnpm install
+
+# Verify installation
+RUN pnpm list
 
 # Build stage
 FROM base AS builder
 WORKDIR /app
-COPY . . 
+COPY . .
 RUN pnpm build
 
 # Production stage
@@ -22,6 +25,8 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Copy necessary files for production
+COPY sqlite.db ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
