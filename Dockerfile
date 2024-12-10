@@ -1,15 +1,27 @@
 # Base image
 FROM node:18-bullseye AS base
 
-# Install dependencies
+# Install system dependencies for native modules
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
+# Copy package.json and lockfile, then install dependencies
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 # Build stage
 FROM base AS builder
 WORKDIR /app
-COPY . . 
+COPY . .
+
+# Rebuild native modules for Docker environment
+RUN pnpm rebuild better-sqlite3
+
+# Build the project
 RUN pnpm build
 
 # Production stage
