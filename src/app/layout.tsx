@@ -4,6 +4,7 @@ import "./globals.css";
 import { Dosis } from "next/font/google";
 import SideBar from "@/components/custom/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 const dosis = Dosis({
   subsets: ["latin"],
@@ -22,14 +23,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider>
-      <html lang="en">
-        <body className={`${dosis.variable} antialiased`}>
-          <SideBar />
-          <SidebarTrigger />
-          {children}
-        </body>
-      </html>
-    </SidebarProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${dosis.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <SideBar />
+            <SidebarTrigger />
+            {children}
+          </SidebarProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
