@@ -10,7 +10,7 @@ export const games = sqliteTable("games", {
   board: text("board", { mode: "json" }).$type<string[][]>().notNull(),
   gameState: text({
     enum: ["opening", "midgame", "endgame", "unknown"],
-  }).notNull(),
+  }),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
   updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
 });
