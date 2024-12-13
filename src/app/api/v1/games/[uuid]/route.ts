@@ -3,20 +3,23 @@ import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   try {
-    const { searchParams } = request.nextUrl;
-    const uuid = searchParams.get("uuid");
-    const includeDetails = searchParams.get("details") === "true";
+    const slug = (await params).slug; // The slug here is the uuid
+    const includeDetails =
+      new URL(request.url).searchParams.get("details") === "true";
 
-    if (!uuid) {
+    if (!slug) {
       return NextResponse.json(
         { code: 400, message: "UUID parameter is required" },
         { status: 400 },
       );
     }
 
-    const game = await db.select().from(games).where(eq(games.id, uuid));
+    const game = await db.select().from(games).where(eq(games.id, slug));
 
     if (!game.length) {
       return NextResponse.json(
@@ -39,12 +42,14 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   try {
-    const { searchParams } = request.nextUrl;
-    const uuid = searchParams.get("uuid");
+    const slug = (await params).slug; // The slug here is the uuid
 
-    if (!uuid) {
+    if (!slug) {
       return NextResponse.json(
         { code: 400, message: "UUID parameter is required" },
         { status: 400 },
@@ -56,7 +61,7 @@ export async function PUT(request: NextRequest) {
     const [updatedGame] = await db
       .update(games)
       .set(body)
-      .where(eq(games.id, uuid))
+      .where(eq(games.id, slug))
       .returning();
 
     if (!updatedGame) {
@@ -76,12 +81,14 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   try {
-    const { searchParams } = request.nextUrl;
-    const uuid = searchParams.get("uuid");
+    const slug = (await params).slug; // The slug here is the uuid
 
-    if (!uuid) {
+    if (!slug) {
       return NextResponse.json(
         { code: 400, message: "UUID parameter is required" },
         { status: 400 },
@@ -90,7 +97,7 @@ export async function DELETE(request: NextRequest) {
 
     const deleted = await db
       .delete(games)
-      .where(eq(games.id, uuid))
+      .where(eq(games.id, slug))
       .returning();
 
     if (!deleted.length) {
