@@ -101,7 +101,7 @@ export async function DELETE(
       );
     }
 
-    return NextResponse.json({ status: 204 });
+    return NextResponse.json({ code: 204 }, { status: 204 });
   } catch (error) {
     console.error("DELETE Error:", error);
     return NextResponse.json(
