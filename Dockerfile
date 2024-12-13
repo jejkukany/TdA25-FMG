@@ -1,8 +1,15 @@
 # Base image
 FROM node:18-bullseye AS base
 
-# Install dependencies
+# Install system dependencies for native modules
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
+# Copy package.json and lockfile, then install dependencies
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install
 
@@ -13,6 +20,7 @@ RUN pnpm list
 FROM base AS builder
 WORKDIR /app
 COPY . .
+
 RUN pnpm build
 
 # Production stage
