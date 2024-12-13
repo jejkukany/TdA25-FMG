@@ -25,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "../ui/separator";
 
 const menuItems = [
-  { icon: PlayCircle, label: "Play", href: "/play" },
+  { icon: PlayCircle, label: "Game", href: "/game" },
   { icon: PuzzlePiece, label: "Puzzles", href: "/puzzles" },
 ];
 
