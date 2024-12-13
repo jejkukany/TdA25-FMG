@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
+import { v4 as uuidv4 } from "uuid";
 
 export async function GET() {
   try {
@@ -17,7 +18,15 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const [newGame] = await db.insert(games).values(body).returning();
+    const [newGame] = await db
+      .insert(games)
+      .values({
+        uuid: uuidv4(),
+        name: body.name,
+        difficulty: body.difficulty,
+        board: body.board,
+      })
+      .returning();
 
     return NextResponse.json(newGame, { status: 201 });
   } catch (error) {

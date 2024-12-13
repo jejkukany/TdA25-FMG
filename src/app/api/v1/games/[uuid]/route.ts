@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: number }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const slug = (await params).slug; // The slug here is the uuid
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const game = await db.select().from(games).where(eq(games.id, slug));
+    const game = await db.select().from(games).where(eq(games.uuid, slug));
 
     if (!game.length) {
       return NextResponse.json(
@@ -44,7 +44,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: number }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const slug = (await params).slug; // The slug here is the uuid
@@ -61,7 +61,7 @@ export async function PUT(
     const [updatedGame] = await db
       .update(games)
       .set(body)
-      .where(eq(games.id, slug))
+      .where(eq(games.uuid, slug))
       .returning();
 
     if (!updatedGame) {
@@ -83,7 +83,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: number }> },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const slug = (await params).slug; // The slug here is the uuid
@@ -97,7 +97,7 @@ export async function DELETE(
 
     const deleted = await db
       .delete(games)
-      .where(eq(games.id, slug))
+      .where(eq(games.uuid, slug))
       .returning();
 
     if (!deleted.length) {
