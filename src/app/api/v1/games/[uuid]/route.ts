@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> },
+  { params }: { params: Promise<{ slug: number }> },
 ) {
   try {
     const slug = (await params).slug; // The slug here is the uuid
@@ -44,7 +44,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> },
+  { params }: { params: Promise<{ slug: number }> },
 ) {
   try {
     const slug = (await params).slug; // The slug here is the uuid
@@ -83,7 +83,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> },
+  { params }: { params: Promise<{ slug: number }> },
 ) {
   try {
     const slug = (await params).slug; // The slug here is the uuid
