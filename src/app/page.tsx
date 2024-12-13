@@ -3,7 +3,7 @@ async function fetchData(url: string) {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(
-        `Failed to fetch: ${response.status} ${response.statusText}`,
+        `Failed to fetch: ${response.status} ${response.statusText} ${response.body}`,
       );
     }
     return await response.json();
