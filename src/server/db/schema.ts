@@ -1,5 +1,16 @@
-import { text, sqliteTable } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export const users = sqliteTable("users", {
-  id: text("id").notNull().primaryKey(),
+// Games table
+export const games = sqliteTable("games", {
+  id: text("id").primaryKey().notNull(),
+  name: text("name").notNull(),
+  difficulty: text({
+    enum: ["beginner", "easy", "medium", "hard", "extreme"],
+  }).notNull(),
+  board: text("board", { mode: "json" }).$type<string[][]>().notNull(),
+  gameState: text({
+    enum: ["opening", "midgame", "endgame", "unknown"],
+  }).notNull(),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
+  updatedAt: text("updated_at").default("CURRENT_TIMESTAMP").notNull(),
 });
