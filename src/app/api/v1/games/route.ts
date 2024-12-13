@@ -20,9 +20,9 @@ export async function POST(request: Request) {
     const [newGame] = await db.insert(games).values(body).returning();
 
     return NextResponse.json(newGame, { status: 201 });
-  } catch {
+  } catch (error) {
     return NextResponse.json(
-      { code: 400, message: "Bad Request" },
+      { code: 400, message: "Bad Request - " + error },
       { status: 400 },
     );
   }
