@@ -1,14 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET(
-  _: Request,
-  { params }: { params: { uuid: string } },
-) {
+export async function GET(request: NextRequest) {
   try {
-    const game = await db.select().from(games).where(eq(games.id, params.uuid));
+    const { searchParams } = request.nextUrl;
+    const uuid = searchParams.get("uuid");
+    const includeDetails = searchParams.get("details") === "true";
+
+    if (!uuid) {
+      return NextResponse.json(
+        { code: 400, message: "UUID parameter is required" },
+        { status: 400 },
+      );
+    }
+
+    const game = await db.select().from(games).where(eq(games.id, uuid));
 
     if (!game.length) {
       return NextResponse.json(
@@ -16,8 +24,14 @@ export async function GET(
         { status: 404 },
       );
     }
-    return NextResponse.json(game[0], { status: 200 });
-  } catch {
+
+    const result = includeDetails
+      ? { ...game[0], details: "Extra details here" }
+      : game[0];
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    console.error("GET Error:", error);
     return NextResponse.json(
       { code: 500, message: "Internal Server Error" },
       { status: 500 },
@@ -25,17 +39,24 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { uuid: string } },
-) {
+export async function PUT(request: NextRequest) {
   try {
+    const { searchParams } = request.nextUrl;
+    const uuid = searchParams.get("uuid");
+
+    if (!uuid) {
+      return NextResponse.json(
+        { code: 400, message: "UUID parameter is required" },
+        { status: 400 },
+      );
+    }
+
     const body = await request.json();
 
     const [updatedGame] = await db
       .update(games)
       .set(body)
-      .where(eq(games.id, params.uuid))
+      .where(eq(games.id, uuid))
       .returning();
 
     if (!updatedGame) {
@@ -44,8 +65,10 @@ export async function PUT(
         { status: 404 },
       );
     }
+
     return NextResponse.json(updatedGame, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error("PUT Error:", error);
     return NextResponse.json(
       { code: 400, message: "Bad Request" },
       { status: 400 },
@@ -53,14 +76,21 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  _: Request,
-  { params }: { params: { uuid: string } },
-) {
+export async function DELETE(request: NextRequest) {
   try {
+    const { searchParams } = request.nextUrl;
+    const uuid = searchParams.get("uuid");
+
+    if (!uuid) {
+      return NextResponse.json(
+        { code: 400, message: "UUID parameter is required" },
+        { status: 400 },
+      );
+    }
+
     const deleted = await db
       .delete(games)
-      .where(eq(games.id, params.uuid))
+      .where(eq(games.id, uuid))
       .returning();
 
     if (!deleted.length) {
@@ -69,8 +99,10 @@ export async function DELETE(
         { status: 404 },
       );
     }
+
     return NextResponse.json(null, { status: 204 });
-  } catch {
+  } catch (error) {
+    console.error("DELETE Error:", error);
     return NextResponse.json(
       { code: 500, message: "Internal Server Error" },
       { status: 500 },
