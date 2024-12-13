@@ -34,10 +34,15 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files for production
-COPY sqlite.db ./
+COPY --chmod=765 sqlite.db /app
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Ensure sqlite.db is writable by anyone
+RUN chmod a+rw /app/sqlite.db
+
+RUN chmod a+rw /app
 
 USER nextjs
 EXPOSE 3000
