@@ -1,8 +1,8 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, int } from "drizzle-orm/sqlite-core";
 
 // Games table
 export const games = sqliteTable("games", {
-  id: text("id").primaryKey().notNull(),
+  id: int("id").primaryKey().notNull(),
   name: text("name").notNull(),
   difficulty: text({
     enum: ["beginner", "easy", "medium", "hard", "extreme"],
