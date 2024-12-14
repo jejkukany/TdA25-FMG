@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "../ui/separator";
+import Link from "next/link";
 
 const menuItems = [
   { icon: PlayCircle, label: "Game", href: "/game" },
@@ -61,10 +62,10 @@ const SideBar = () => {
                     asChild
                     className="h-14 px-4 w-full transition-colors"
                   >
-                    <a href={item.href} className="flex items-center gap-3">
+                    <Link href={item.href} className="flex items-center gap-3">
                       <item.icon className="h-6 w-6" />
                       <span className="font-medium">{item.label}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
