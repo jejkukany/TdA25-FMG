@@ -30,7 +30,7 @@ export default function SpecificGame() {
 
   return (
     <div className="flex-1 p-8">
-      <Board initialBoard={game.board} />
+      {game.board && <Board initialBoard={game.board} />}
     </div>
   );
 }
