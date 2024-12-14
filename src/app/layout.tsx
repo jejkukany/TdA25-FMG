@@ -5,6 +5,7 @@ import { Dosis } from "next/font/google";
 import SideBar from "@/components/custom/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import QueryProvider from "@/components/provider/QueryClientProvider";
 
 const dosis = Dosis({
   subsets: ["latin"],
@@ -34,10 +35,11 @@ export default function RootLayout({
           <SidebarProvider>
             <SideBar />
             <SidebarTrigger />
-            {children}
+            <QueryProvider>{children}</QueryProvider>
           </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

@@ -1,34 +1,28 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Game as GameType } from "@/types/gameTypes";
 import GameList from "@/components/custom/game/GameList";
+import { useGames } from "@/queries/useGames";
+import QueryClientProvider from "@/components/provider/QueryClientProvider";
 
 export default function GamesPage() {
-  const [games, setGames] = useState<GameType[]>();
+  //const [games, setGames] = useState<GameType[]>();
+  const { data: games, isPending, isError, error } = useGames();
 
-  const fetchGames = async () => {
-    try {
-      const response = await fetch("/api/v1/games/");
-      const data = await response.json();
-      setGames(data);
-    } catch (error) {
-      console.error("Error fetching games:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchGames();
-  }, []);
-
-  if (!games) {
+  if (isPending) {
     return <div>Loading...</div>;
   }
 
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Current Games</h1>
-      <GameList games={games} />
-    </div>
+    <QueryClientProvider>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Current Games</h1>
+        <GameList games={games} />
+      </div>
+
+    </QueryClientProvider>
   );
 }
