@@ -77,10 +77,7 @@ const SideBar = () => {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
-              <AvatarImage
-                src="/placeholder.svg?height=32&width=32"
-                alt="User"
-              />
+              <AvatarImage alt="User" />
               <AvatarFallback>GU</AvatarFallback>
             </Avatar>
             <span>Guest</span>
