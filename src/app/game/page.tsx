@@ -2,7 +2,6 @@
 
 import GameList from "@/components/custom/game/GameList";
 import { useGames } from "@/queries/useGames";
-import QueryClientProvider from "@/components/provider/QueryClientProvider";
 
 export default function GamesPage() {
   //const [games, setGames] = useState<GameType[]>();
@@ -17,12 +16,9 @@ export default function GamesPage() {
   }
 
   return (
-    <QueryClientProvider>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Current Games</h1>
         <GameList games={games} />
       </div>
-
-    </QueryClientProvider>
   );
 }

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Game as GameType } from "@/types/gameTypes";
 
 export const fetchGames = async () => {
     try {
@@ -10,7 +11,7 @@ export const fetchGames = async () => {
     }    
 };
 
-export const useGames = () => useQuery({
+export const useGames = () => useQuery<GameType[], Error>({
   queryKey: ['games'],
   queryFn: fetchGames,
 })
