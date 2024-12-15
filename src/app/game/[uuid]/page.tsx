@@ -1,36 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Board from "@/components/custom/game/Board";
-import { Game as GameType } from "@/types/gameTypes";
 import { useParams } from "next/navigation";
+import { useSpecificGame } from "@/queries/useSpecificGame";
 
 export default function SpecificGame() {
-  const [game, setGame] = useState<GameType | null>(null);
   const gameParams = useParams<{ uuid: string }>();
-
-  const fetchGame = async () => {
-    try {
-      const response = await fetch(`/api/v1/games/${gameParams.uuid}`);
-
-      const data = (await response.json()) as GameType;
-      setGame(data);
-    } catch (error) {
-      console.error("Error fetching game:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchGame();
-  }, []);
-
-  if (!game) {
+  const { data: game, isLoading, isError, error } = useSpecificGame(gameParams.uuid);
+  
+  if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>{error.message}</div>;
   }
 
   return (
     <div className="flex-1 p-8">
-      {game.board && <Board initialBoard={game.board} />}
+      {game && game.board && <Board initialBoard={game.board} />}
     </div>
   );
 }
