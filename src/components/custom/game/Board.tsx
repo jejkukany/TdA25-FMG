@@ -62,8 +62,8 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 
     const newBoard = board.map((row, rIndex) =>
       row.map((cell, cIndex) =>
-        rIndex === rowIndex && cIndex === cellIndex ? currentPlayer : cell
-      )
+        rIndex === rowIndex && cIndex === cellIndex ? currentPlayer : cell,
+      ),
     );
 
     setBoard(newBoard);
@@ -75,7 +75,9 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     }
   };
 
-  return (
+  return winner ? (
+    <div>Winner: {winner}</div>
+  ) : (
     <div className="flex flex-col items-center gap-4">
       <div className="text-lg font-semibold mb-2 flex items-center flex-row gap-5">
         Current Player:{" "}
@@ -112,7 +114,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                           src="/X_cerne.svg"
                           alt="X"
                           className="h-6 hidden dark:block"
-                          />
+                        />
                         <img
                           src="/X_bile.svg"
                           alt="X"
@@ -125,7 +127,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                           src="/O_cerne.svg"
                           alt="O"
                           className="h-6 hidden dark:block"
-                          />
+                        />
                         <img
                           src="/O_bile.svg"
                           alt="O"

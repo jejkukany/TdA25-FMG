@@ -6,8 +6,13 @@ import { useSpecificGame } from "@/queries/useSpecificGame";
 
 export default function SpecificGame() {
   const gameParams = useParams<{ uuid: string }>();
-  const { data: game, isLoading, isError, error } = useSpecificGame(gameParams.uuid);
-  
+  const {
+    data: game,
+    isLoading,
+    isError,
+    error,
+  } = useSpecificGame(gameParams.uuid);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }

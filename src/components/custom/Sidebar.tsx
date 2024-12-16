@@ -32,20 +32,19 @@ const menuItems = [
 
 const SideBar = () => {
   const { theme, setTheme } = useTheme();
-
   return (
     <Sidebar className="border-r bg-[#262421] w-[240px] flex flex-col">
       <SidebarHeader className="p-4 ">
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center">
           <img
-            src="/Think-different-Academy_LOGO_oficialni_dark-mode.svg"
+            src="/Think-different-Academy_LOGO_oficialni_1_dark-mode.svg"
             alt="Think Different Academy"
-            className="h-20 hidden dark:block"
+            className="h-12 hidden dark:block"
           />
           <img
-            src="/Think-different-Academy_LOGO_oficialni.svg"
+            src="/Think-different-Academy_LOGO_oficialni_1.svg"
             alt="Think Different Academy"
-            className="h-20 dark:hidden"
+            className="h-12 dark:hidden"
           />
         </div>
       </SidebarHeader>
