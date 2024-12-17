@@ -5,10 +5,13 @@ import { usePathname } from "next/navigation";
 import {
   PlayCircle,
   PuzzleIcon as PuzzlePiece,
-  LogIn,
+  LogOut,
   Home,
   Settings,
   User,
+  ChevronsUpDown,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -20,6 +23,7 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
+  SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,7 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import Image from "next/image";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
@@ -45,7 +49,7 @@ const menuItems = [
 
 const SideBar = () => {
   const { theme, setTheme } = useTheme();
-  const { state } = useSidebar();
+  const { state, isMobile } = useSidebar();
   const pathname = usePathname();
 
   return (
@@ -55,7 +59,7 @@ const SideBar = () => {
     >
       <SidebarHeader>
         <div
-          className={clsx(
+          className={cn(
             "h-[48px] w-[160px] flex items-center relative",
             state === "collapsed"
               ? "justify-left pl-[1.2px]"
@@ -65,17 +69,14 @@ const SideBar = () => {
           <Image
             src="/Think-different-Academy_LOGO_oficialni_1_dark-mode.svg"
             alt="Think Different Academy"
-            className={clsx(
-              "h-12 hidden",
-              state !== "collapsed" && "dark:block",
-            )}
+            className={cn("h-12 hidden", state !== "collapsed" && "dark:block")}
             fill
           />
           <Image
             src="/Think-different-Academy_LOGO_oficialni_1.svg"
             alt="Think Different Academy"
             fill
-            className={clsx(
+            className={cn(
               "h-12 dark:hidden",
               state === "collapsed" && "hidden",
             )}
@@ -83,9 +84,7 @@ const SideBar = () => {
           <Image
             src="/Think-different-Academy_LOGO_erb.svg"
             alt="Think Different Academy"
-            className={clsx(
-              state === "collapsed" ? "block p-[2.0px]" : "hidden",
-            )}
+            className={cn(state === "collapsed" ? "block p-[2.0px]" : "hidden")}
             width={48}
             height={48}
           />
@@ -99,30 +98,35 @@ const SideBar = () => {
           <SidebarGroupContent>
             <SidebarMenu className="flex flex-col gap-3">
               {menuItems.map((item) => (
-                <Link href={item.href} key={item.label}>
-                  <SidebarMenuButton
-                    variant="outline"
-                    className={clsx(
-                      "w-full flex flex-row items-center h-12 justify-center",
-                      "/" + pathname.split("/")[1] === item.href &&
-                        "bg-accent text-accent-foreground border-none",
-                    )}
-                  >
-                    <item.icon
-                      className={clsx(
-                        state === "collapsed" ? "h-6 w-6" : "h-4 w-4",
-                      )}
-                    />
-                    <span
-                      className={clsx(
-                        "font-semibold",
-                        state === "collapsed" && "hidden",
+                <SidebarMenuItem key={item.label}>
+                  <Link href={item.href} passHref legacyBehavior>
+                    <SidebarMenuButton
+                      asChild
+                      variant="outline"
+                      className={cn(
+                        "w-full flex flex-row items-center h-12 justify-center",
+                        "/" + pathname.split("/")[1] === item.href &&
+                          "bg-accent text-accent-foreground border-none",
                       )}
                     >
-                      {item.label}
-                    </span>
-                  </SidebarMenuButton>
-                </Link>
+                      <a>
+                        <item.icon
+                          className={cn(
+                            state === "collapsed" ? "h-6 w-6" : "h-4 w-4",
+                          )}
+                        />
+                        <span
+                          className={cn(
+                            "font-semibold",
+                            state === "collapsed" && "hidden",
+                          )}
+                        >
+                          {item.label}
+                        </span>
+                      </a>
+                    </SidebarMenuButton>
+                  </Link>
+                </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -131,75 +135,82 @@ const SideBar = () => {
 
       <Separator />
 
-      <SidebarFooter className="flex flex-col gap-4">
-        <div
-          className={clsx(
-            state === "collapsed" ? "flex-col" : "flex-row",
-            "flex justify-between items-center",
-          )}
-        >
-          <div className="flex items-center gap-3">
-            <Avatar
-              className={clsx(state === "collapsed" ? "hidden" : "h-12 w-12")}
-            >
-              <AvatarImage alt="User" />
-              <AvatarFallback>GU</AvatarFallback>
-            </Avatar>
-            <span className={clsx(state === "collapsed" && "hidden")}>
-              Guest
-            </span>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild className="h-12 justify-center w-12">
-              <div>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  variant="outline"
-                  className={clsx(
-                    state === "collapsed" ? "hidden" : "flex",
-                    "h-12 w-12 items-center align-middle justify-center gap-2",
-                  )}
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Settings />
-                </SidebarMenuButton>
-                <div className="flex items-center gap-3">
-                  <Avatar
-                    className={clsx(
-                      state === "collapsed" ? "h-12 w-12" : "hidden",
-                    )}
-                  >
+                  <Avatar className="h-12 w-12 rounded-lg">
                     <AvatarImage alt="User" />
                     <AvatarFallback>GU</AvatarFallback>
                   </Avatar>
-                  <span className={clsx(state === "collapsed" ? "" : "hidden")}>
-                    Guest
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="right" align="end" className=" w-56">
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex items-center justify-between cursor-pointer">
-                <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
-                <Switch
-                  checked={theme === "dark"}
-                  onCheckedChange={(checked) =>
-                    setTheme(checked ? "dark" : "light")
-                  }
-                />
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Account</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LogIn className="mr-2 h-4 w-4" />
-                <span>Log In</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">Guest</span>
+                    <span className="truncate text-xs">guest@example.com</span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-12 w-12 rounded-lg">
+                      <AvatarImage alt="User" />
+                      <AvatarFallback>GU</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">Guest</span>
+                      <span className="truncate text-xs">
+                        guest@example.com
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Account</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="flex items-center justify-between cursor-pointer"
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    setTheme(theme === "dark" ? "light" : "dark");
+                  }}
+                >
+                  <div className="flex items-center">
+                    {theme === "dark" ? (
+                      <Moon className="mr-2 h-4 w-4" />
+                    ) : (
+                      <Sun className="mr-2 h-4 w-4" />
+                    )}
+                    <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
+                  </div>
+                  <Switch checked={theme === "dark"} />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log In</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );
