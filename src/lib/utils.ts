@@ -48,7 +48,6 @@ export const determineGameState = (
   totalMoves: number,
   currentPlayer: "X" | "O"
 ) => {
-  const size = 15;
 
   // 1. Check for Opening (5 or fewer moves)
   if (totalMoves <= 5) {
