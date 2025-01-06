@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { GameRequestBody } from "@/types/gameTypes";
 import { determineGameState, validateBoard } from "@/lib/utils";
 
 
