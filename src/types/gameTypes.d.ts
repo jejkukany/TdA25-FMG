@@ -9,6 +9,12 @@ export type Error = {
   message: string;
 };
 
+export type GameRequestBody = {
+  board: string[][];
+  currentPlayer: "X" | "O";
+}; 
+
+
 export type Game = {
   uuid: string;
   createdAt: number;

@@ -43,7 +43,7 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
-  { icon: PlayCircle, label: "Game", href: "/game" },
+  { icon: PlayCircle, label: "Games", href: "/game" },
   { icon: PuzzlePiece, label: "Puzzles", href: "/puzzles" },
 ];
 
