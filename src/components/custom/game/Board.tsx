@@ -12,7 +12,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
 
-  // Function to check for a winner
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
 

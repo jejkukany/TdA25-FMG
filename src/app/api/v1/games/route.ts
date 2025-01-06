@@ -18,6 +18,38 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const validSymbols = new Set(["X", "O", ""]);
+
+    if (
+      !Array.isArray(body.board) ||
+      body.board.length !== 15 ||
+      body.board.some(
+        (row: Array<string>) => !Array.isArray(row) || row.length !== 15,
+      )
+    ) {
+      return NextResponse.json(
+        {
+          code: 400,
+          message: "Invalid board dimensions. The board must be 15x15.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const hasInvalidSymbols = body.board.some((row: Array<string>) =>
+      row.some((cell: string) => !validSymbols.has(cell)),
+    );
+
+    if (hasInvalidSymbols) {
+      return NextResponse.json(
+        {
+          code: 400,
+          message: "Invalid board contents. Only 'X', 'O', or '' are allowed.",
+        },
+        { status: 400 },
+      );
+    }
+
     const [newGame] = await db
       .insert(games)
       .values({
