@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { GameRequestBody } from "@/types/gameTypes";
+import { determineGameState, validateBoard } from "@/lib/utils";
+
 
 export async function GET(
   request: NextRequest,
@@ -26,7 +29,36 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(game[0], { status: 200 });
+    const gameData = game[0];
+    const board = gameData.board;
+    // Dynamically calculate currentPlayer
+    const flatBoard = board.flat();
+    const xCount = flatBoard.filter((cell) => cell === "X").length;
+    const oCount = flatBoard.filter((cell) => cell === "O").length;
+    const currentPlayer: "X" | "O" = xCount > oCount ? "O" : "X"; // "X" always starts
+
+    const validationError = validateBoard(board, currentPlayer);
+
+    if (validationError) {
+      return NextResponse.json(
+        { code: 400, message: validationError },
+        { status: 400 }
+      );
+    }
+
+    const totalMoves = board.flat().filter((cell) => cell === "X" || cell === "O").length;
+    const gameState = determineGameState(board, totalMoves, currentPlayer);
+    console.log(gameState);
+
+    // Return the game data with the derived currentPlayer
+    return NextResponse.json(
+      {
+        ...gameData,
+        currentPlayer,
+        gameState,
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("GET Error:", error);
     return NextResponse.json(
@@ -35,6 +67,7 @@ export async function GET(
     );
   }
 }
+
 
 export async function PUT(
   request: NextRequest,
@@ -74,6 +107,8 @@ export async function PUT(
     );
   }
 }
+
+
 
 export async function DELETE(
   request: NextRequest,
