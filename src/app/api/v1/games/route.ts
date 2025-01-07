@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     if (validateBoard(body.board, currentPlayer) !== null) {
       return NextResponse.json(
         { code: 422, message: "Invalid board" },
-        { status: 400 },
+        { status: 422 },
       );
     }
 
