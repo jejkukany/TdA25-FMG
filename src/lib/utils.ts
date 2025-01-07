@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const validateBoard = (board: string[][], currentPlayer: "X" | "O") => {
@@ -32,13 +32,16 @@ export const validateBoard = (board: string[][], currentPlayer: "X" | "O") => {
 
   // Check the current player
   if (
-    (currentPlayer === "X" && xCount < oCount) || // X's turn but fewer Xs
-    (currentPlayer === "O" && xCount < oCount)    // O's turn but more Xs
+    (currentPlayer === "X" && xCount <= oCount) || // X's turn but fewer or equal Xs
+    (currentPlayer === "O" && xCount > oCount) // O's turn but fewer Os
   ) {
-    console.error("Validation Error: Invalid current player", { currentPlayer, xCount, oCount });
+    console.error("Validation Error: Invalid current player", {
+      currentPlayer,
+      xCount,
+      oCount,
+    });
     return "Invalid current player.";
   }
-  
 
   return null; // Valid board
 };
@@ -46,25 +49,25 @@ export const validateBoard = (board: string[][], currentPlayer: "X" | "O") => {
 export const determineGameState = (
   board: string[][],
   totalMoves: number,
-  currentPlayer: "X" | "O"
-) => {
+  currentPlayer: "X" | "O",
+): string => {
+  const xWin = checkEndGame(board, "X");
+  const oWin = checkEndGame(board, "O");
 
-  // 1. Check for Opening (5 or fewer moves)
+  // 1. Check for Endgame (Potential winning move)
+  const currentPlayerHasWinningMove = hasPotentialWin(board, currentPlayer);
+  if (xWin || oWin || currentPlayerHasWinningMove) {
+    return "endgame";
+  }
+
+  // 2. Check for Opening (5 or fewer moves)
   if (totalMoves <= 5) {
     return "opening";
   }
 
-  // 2. Check for Middle game (6 or more moves, no immediate win)
-  const xWin = checkEndGame(board, "X");
-  const oWin = checkEndGame(board, "O");
-  if (!xWin && !oWin && totalMoves >= 6) {
+  // 3. Check for Middle game (6 or more moves, no immediate win)
+  if (totalMoves >= 6) {
     return "midgame";
-  }
-
-  // 3. Check for Endgame (Potential winning move for the current player)
-  const currentPlayerHasWinningMove = hasPotentialWin(board, currentPlayer);
-  if (xWin || oWin || currentPlayerHasWinningMove) {
-    return "endgame";
   }
 
   // Default to unknown
@@ -75,19 +78,14 @@ export const checkEndGame = (board: string[][], symbol: string): boolean => {
   const size = board.length;
 
   const checkWin = (row: number, col: number, dRow: number, dCol: number) => {
-    let count = 0;
-
     for (let i = 0; i < 5; i++) {
       const r = row + i * dRow;
       const c = col + i * dCol;
-
       if (r < 0 || c < 0 || r >= size || c >= size || board[r][c] !== symbol) {
         return false;
       }
-      count++;
     }
-
-    return count === 5; // Exactly 5 in a row
+    return true; // Exactly 5 in a row
   };
 
   for (let row = 0; row < size; row++) {
@@ -109,7 +107,12 @@ export const checkEndGame = (board: string[][], symbol: string): boolean => {
 export const hasPotentialWin = (board: string[][], symbol: string): boolean => {
   const size = board.length;
 
-  const checkPotential = (row: number, col: number, dRow: number, dCol: number) => {
+  const checkPotential = (
+    row: number,
+    col: number,
+    dRow: number,
+    dCol: number,
+  ) => {
     let count = 0;
     let gaps = 0;
 
@@ -118,22 +121,22 @@ export const hasPotentialWin = (board: string[][], symbol: string): boolean => {
       const c = col + i * dCol;
 
       if (r < 0 || c < 0 || r >= size || c >= size) {
-        gaps++;
-        continue;
+        return false; // Outside bounds
       }
 
-      if (board[r][c] === symbol) {
+      const cell = board[r][c];
+      if (cell === symbol) {
         count++;
-      } else if (board[r][c] !== "") {
-        return false; // Blocked by opponent
-      } else {
+      } else if (cell === "") {
         gaps++;
+      } else {
+        return false; // Opponent's piece blocks the potential win
       }
 
       if (gaps > 1) return false; // Too many gaps
     }
 
-    return count === 4 && gaps <= 1; // Exactly 4 with one gap
+    return count === 4 && gaps === 1; // Exactly 4 with one gap
   };
 
   for (let row = 0; row < size; row++) {

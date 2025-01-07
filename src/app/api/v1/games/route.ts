@@ -21,6 +21,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const validSymbols = new Set(["X", "O", ""]);
 
+    // Validate board dimensions
     if (
       !Array.isArray(body.board) ||
       body.board.length !== 15 ||
@@ -37,10 +38,10 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate symbols on the board
     const hasInvalidSymbols = body.board.some((row: Array<string>) =>
       row.some((cell: string) => !validSymbols.has(cell)),
     );
-
     if (hasInvalidSymbols) {
       return NextResponse.json(
         {
@@ -50,15 +51,22 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+
+    // Calculate total moves and determine the current player
     const flatBoard = body.board.flat();
     const xCount = flatBoard.filter((cell: string) => cell === "X").length;
     const oCount = flatBoard.filter((cell: string) => cell === "O").length;
     const currentPlayer: "X" | "O" = xCount > oCount ? "O" : "X";
-    const totalMoves = body.board
-      .flat()
-      .filter((cell: string) => cell === "X" || cell === "O").length;
-    const gameState = determineGameState(body.board, totalMoves, currentPlayer);
+    const totalMoves = xCount + oCount;
 
+    // Determine the game state
+    const gameState = determineGameState(
+      body.board,
+      totalMoves,
+      currentPlayer,
+    ) as "endgame" | "opening" | "midgame" | "unknown"; // Ensure strict typing
+
+    // Insert the new game into the database
     const [newGame] = await db
       .insert(games)
       .values({
@@ -73,7 +81,7 @@ export async function POST(request: Request) {
     return NextResponse.json(newGame, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { code: 400, message: "Bad Request - " + error },
+      { code: 400, message: `Bad Request - ${error}` },
       { status: 400 },
     );
   }
