@@ -70,12 +70,14 @@ const SideBar = () => {
             src="/Think-different-Academy_LOGO_oficialni_1_dark-mode.svg"
             alt="Think Different Academy"
             className={cn("h-12 hidden", state !== "collapsed" && "dark:block")}
+            priority
             fill
           />
           <Image
             src="/Think-different-Academy_LOGO_oficialni_1.svg"
             alt="Think Different Academy"
             fill
+            priority
             className={cn(
               "h-12 dark:hidden",
               state === "collapsed" && "hidden",
