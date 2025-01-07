@@ -32,8 +32,8 @@ export const validateBoard = (board: string[][], currentPlayer: "X" | "O") => {
 
   // Check the current player
   if (
-    (currentPlayer === "X" && xCount <= oCount) || // X's turn but fewer or equal Xs
-    (currentPlayer === "O" && xCount > oCount) // O's turn but fewer Os
+    (currentPlayer === "X" && xCount > oCount) || // X's turn but fewer or equal Xs
+    (currentPlayer === "O" && xCount < oCount) // O's turn but fewer Os
   ) {
     console.error("Validation Error: Invalid current player", {
       currentPlayer,
