@@ -31,10 +31,10 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json(
         {
-          code: 400,
+          code: 422,
           message: "Invalid board dimensions. The board must be 15x15.",
         },
-        { status: 400 },
+        { status: 422 },
       );
     }
 
@@ -45,10 +45,10 @@ export async function POST(request: Request) {
     if (hasInvalidSymbols) {
       return NextResponse.json(
         {
-          code: 400,
+          code: 422,
           message: "Invalid board contents. Only 'X', 'O', or '' are allowed.",
         },
-        { status: 400 },
+        { status: 422 },
       );
     }
 
