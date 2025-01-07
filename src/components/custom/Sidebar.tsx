@@ -12,6 +12,7 @@ import {
   ChevronsUpDown,
   Sun,
   Moon,
+  Grid,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -43,8 +44,8 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
-  { icon: PlayCircle, label: "Games", href: "/game" },
-  { icon: PuzzlePiece, label: "Puzzles", href: "/puzzles" },
+  { icon: PlayCircle, label: "Game", href: "/game" },
+  { icon: Grid, label: "Games", href: "/games" },
 ];
 
 const SideBar = () => {
