@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { v4 as uuidv4 } from "uuid";
+import { determineGameState } from "@/lib/utils";
 
 export async function GET() {
   try {
@@ -49,6 +50,14 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+    const flatBoard = body.board.flat();
+    const xCount = flatBoard.filter((cell: string) => cell === "X").length;
+    const oCount = flatBoard.filter((cell: string) => cell === "O").length;
+    const currentPlayer: "X" | "O" = xCount > oCount ? "O" : "X";
+    const totalMoves = body.board
+      .flat()
+      .filter((cell: string) => cell === "X" || cell === "O").length;
+    const gameState = determineGameState(body.board, totalMoves, currentPlayer);
 
     const [newGame] = await db
       .insert(games)
@@ -57,6 +66,7 @@ export async function POST(request: Request) {
         name: body.name,
         difficulty: body.difficulty,
         board: body.board,
+        gameState: gameState,
       })
       .returning();
 
