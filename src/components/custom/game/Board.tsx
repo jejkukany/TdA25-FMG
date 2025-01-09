@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { VictoryModal } from "./VictoryModal";
 
 interface BoardProps {
   initialBoard: string[][];
@@ -11,6 +12,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -69,80 +71,105 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 
     if (checkWinner(newBoard, currentPlayer)) {
       setWinner(currentPlayer);
+      setIsModalOpen(true);
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     }
   };
 
-  return winner ? (
-    <div>Winner: {winner}</div>
-  ) : (
-    <div className="flex flex-col items-center gap-4">
-      <div className="text-lg font-semibold mb-2 flex items-center flex-row gap-5">
-        Current Player:{" "}
-        {currentPlayer === "X" ? (
-          <div>
-            <img src="/X_bile.svg" alt="X" className="h-8 hidden dark:block" />
-            <img src="/X_cerne.svg" alt="X" className="h-8 dark:hidden" />
-          </div>
-        ) : (
-          <div>
-            <img src="/O_bile.svg" alt="O" className="h-8 hidden dark:block" />
-            <img src="/O_cerne.svg" alt="O" className="h-8 dark:hidden" />
-          </div>
-        )}
+  const handleNextGame = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleRematch = () => {
+    setBoard(initialBoard);
+    setCurrentPlayer("X");
+    setWinner(null);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <div className="flex flex-col items-center gap-4">
+        <div className="text-lg font-semibold mb-2 flex items-center flex-row gap-5">
+          Current Player:{" "}
+          {currentPlayer === "X" ? (
+            <div>
+              <img src="/X_bile.svg" alt="X" className="h-8 hidden dark:block" />
+              <img src="/X_cerne.svg" alt="X" className="h-8 dark:hidden" />
+            </div>
+          ) : (
+            <div>
+              <img src="/O_bile.svg" alt="O" className="h-8 hidden dark:block" />
+              <img src="/O_cerne.svg" alt="O" className="h-8 dark:hidden" />
+            </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 border border-gray-600 p-2 rounded-lg">
+          {board.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex gap-2">
+              {row.map((cell, cellIndex) => (
+                <Button
+                  key={`${rowIndex}-${cellIndex}`}
+                  className="w-12 h-12 p-0 text-3xl"
+                  variant={cell !== "" ? "default" : "outline"}
+                  onClick={() => handleCellClick(rowIndex, cellIndex)}
+                >
+                  {cell !== "" && (
+                    <span
+                      className="text-4xl"
+                      aria-label={cell === "X" ? "X" : "O"}
+                    >
+                      {cell === "X" ? (
+                        <div>
+                          <img
+                            src="/X_cerne.svg"
+                            alt="X"
+                            className="h-6 hidden dark:block"
+                          />
+                          <img
+                            src="/X_bile.svg"
+                            alt="X"
+                            className="h-6 dark:hidden"
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <img
+                            src="/O_cerne.svg"
+                            alt="O"
+                            className="h-6 hidden dark:block"
+                          />
+                          <img
+                            src="/O_bile.svg"
+                            alt="O"
+                            className="h-6 dark:hidden"
+                          />
+                        </div>
+                      )}
+                    </span>
+                  )}
+                </Button>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-col gap-2 border border-gray-600 p-2 rounded-lg">
-        {board.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex gap-2">
-            {row.map((cell, cellIndex) => (
-              <Button
-                key={`${rowIndex}-${cellIndex}`}
-                className="w-12 h-12 p-0 text-3xl"
-                variant={cell !== "" ? "default" : "outline"}
-                onClick={() => handleCellClick(rowIndex, cellIndex)}
-              >
-                {cell !== "" && (
-                  <span
-                    className="text-4xl"
-                    aria-label={cell === "X" ? "X" : "O"}
-                  >
-                    {cell === "X" ? (
-                      <div>
-                        <img
-                          src="/X_cerne.svg"
-                          alt="X"
-                          className="h-6 hidden dark:block"
-                        />
-                        <img
-                          src="/X_bile.svg"
-                          alt="X"
-                          className="h-6 dark:hidden"
-                        />
-                      </div>
-                    ) : (
-                      <div>
-                        <img
-                          src="/O_cerne.svg"
-                          alt="O"
-                          className="h-6 hidden dark:block"
-                        />
-                        <img
-                          src="/O_bile.svg"
-                          alt="O"
-                          className="h-6 dark:hidden"
-                        />
-                      </div>
-                    )}
-                  </span>
-                )}
-              </Button>
-            ))}
-          </div>
-        ))}
-      </div>
+
+      <VictoryModal
+        isOpen={isModalOpen}
+        onNextGame={handleNextGame}
+        onRematch={handleRematch}
+        onClose={handleCloseModal}
+        winner={winner}
+      />
     </div>
   );
 };
 
 export default Board;
+

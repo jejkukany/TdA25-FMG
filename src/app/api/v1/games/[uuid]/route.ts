@@ -47,7 +47,6 @@ export async function GET(
 
     const totalMoves = board.flat().filter((cell) => cell === "X" || cell === "O").length;
     const gameState = determineGameState(board, totalMoves, currentPlayer);
-    console.log(gameState);
 
     // Return the game data with the derived currentPlayer
     return NextResponse.json(
