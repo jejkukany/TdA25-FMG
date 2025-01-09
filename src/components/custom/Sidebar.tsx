@@ -43,7 +43,7 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: Home, label: "Home", href: "/" },
-  { icon: PlayCircle, label: "Game", href: "/game" },
+  { icon: PlayCircle, label: "Play", href: "/game" },
   { icon: Grid, label: "Games", href: "/games" },
 ];
 
@@ -67,29 +67,47 @@ const SideBar = () => {
           )}
         >
           <Image
-            src="/Think-different-Academy_LOGO_oficialni_1_dark-mode.svg"
+            src="/Think-different-Academy_LOGO_oficialni-bile.svg"
             alt="Think Different Academy"
-            className={cn("h-12 hidden", state !== "collapsed" && "dark:block")}
+            className={cn(
+              "h-12 hidden",
+              state !== "collapsed" && !isMobile && "dark:block", // Show when not collapsed, dark mode
+              isMobile && "block", // Show on mobile
+            )}
             priority
             fill
           />
           <Image
-            src="/Think-different-Academy_LOGO_oficialni_1.svg"
+            src="/Think-different-Academy_LOGO_oficialni-cerne.svg"
             alt="Think Different Academy"
             fill
             priority
             className={cn(
               "h-12 dark:hidden",
-              state === "collapsed" && "hidden",
+              state === "collapsed" && !isMobile && "hidden", // Hide on collapse and non-mobile view
+              !isMobile && "block", // Show on non-mobile when not collapsed
             )}
           />
           <Image
-            src="/Think-different-Academy_LOGO_erb.svg"
+            src="/Think-different-Academy_LOGO_bily.svg"
             alt="Think Different Academy"
-            className={cn(state === "collapsed" ? "block p-[2.0px]" : "hidden")}
+            className={cn(
+              state === "collapsed" ? "p-[2.0px] hidden dark:block" : "hidden", // Show on dark mode when collapsed
+              isMobile && "hidden", // Hide on mobile view for small logos
+            )}
             width={48}
             height={48}
           />
+          <Image
+            src="/Think-different-Academy_LOGO_cerny.svg"
+            alt="Think Different Academy"
+            className={cn(
+              state === "collapsed" ? "block p-[2.0px] dark:hidden" : "hidden", // Show on light mode when collapsed
+              isMobile && "hidden", // Hide on mobile view for small logos
+            )}
+            width={48}
+            height={48}
+          />{" "}
         </div>
       </SidebarHeader>
 
@@ -120,7 +138,7 @@ const SideBar = () => {
                         <span
                           className={cn(
                             "font-semibold",
-                            state === "collapsed" && "hidden",
+                            state === "collapsed" && !isMobile && "hidden",
                           )}
                         >
                           {item.label}

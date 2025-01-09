@@ -7,14 +7,28 @@ const BoardCardPreview = ({ board }: { board: BoardState | null }) => {
 
   return (
     <div className="w-full max-w-[240px] aspect-square mx-auto">
-      {board.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-[1px] flex-row">
-          {row.map((cell, cellIndex) => (
+      <div
+        className="grid border border-gray-400 mx-auto w-full max-w-sm rounded-lg overflow-hidden"
+        style={{
+          gridTemplateColumns: "repeat(15, 1fr)",
+        }}
+      >
+        {board.map((row, rowIndex) =>
+          row.map((cell, cellIndex) => (
             <div
               key={`${rowIndex}-${cellIndex}`}
               className={clsx(
-                cell !== "" && "bg-foreground",
-                "flex-1 aspect-square flex items-center justify-center border border-input bg-background shadow-sm rounded-sm",
+                cell !== "" && "bg-",
+                "border border-gray-300 flex items-center justify-center aspect-square",
+                rowIndex === 0 && cellIndex === 0
+                  ? "rounded-tl-[7px]"
+                  : rowIndex === 0 && cellIndex === 14
+                    ? "rounded-tr-[7px]"
+                    : rowIndex === 14 && cellIndex === 0
+                      ? "rounded-bl-[7px]"
+                      : rowIndex === 14 && cellIndex === 14
+                        ? "rounded-br-[7px]"
+                        : "",
               )}
             >
               {cell !== "" && (
@@ -24,37 +38,29 @@ const BoardCardPreview = ({ board }: { board: BoardState | null }) => {
                 >
                   {cell === "X" ? (
                     <>
-                      <img
-                        src="/X_cerne.svg"
-                        alt="X"
-                        className="w-full h-full hidden dark:block"
-                      />
+                      <img src="/X_cerne.svg" alt="X" className="dark:hidden" />
                       <img
                         src="/X_bile.svg"
                         alt="X"
-                        className="w-full h-full dark:hidden"
+                        className="hidden dark:block"
                       />
                     </>
                   ) : (
                     <>
-                      <img
-                        src="/O_cerne.svg"
-                        alt="O"
-                        className="w-full h-full hidden dark:block"
-                      />
+                      <img src="/O_cerne.svg" alt="O" className="dark:hidden" />
                       <img
                         src="/O_bile.svg"
                         alt="O"
-                        className="w-full h-full dark:hidden"
+                        className="hidden dark:block"
                       />
                     </>
                   )}
                 </span>
               )}
             </div>
-          ))}
-        </div>
-      ))}
+          )),
+        )}
+      </div>
     </div>
   );
 };
