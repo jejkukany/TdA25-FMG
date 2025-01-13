@@ -100,7 +100,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
             row.map((cell, cellIndex) => (
               <div
                 key={`${rowIndex}-${cellIndex}`}
-                className={`border border-gray-300 flex items-center justify-center aspect-square ${
+                className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center aspect-square ${
                   rowIndex === 0 && cellIndex === 0
                     ? "rounded-tl-[7px]"
                     : rowIndex === 0 && cellIndex === 14

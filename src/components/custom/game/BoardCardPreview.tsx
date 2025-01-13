@@ -19,7 +19,7 @@ const BoardCardPreview = ({ board }: { board: BoardState | null }) => {
               key={`${rowIndex}-${cellIndex}`}
               className={clsx(
                 cell !== "" && "bg-",
-                "border border-gray-300 flex items-center justify-center aspect-square",
+                "border border-gray-300 dark:border-gray-600 flex items-center justify-center aspect-square",
                 rowIndex === 0 && cellIndex === 0
                   ? "rounded-tl-[7px]"
                   : rowIndex === 0 && cellIndex === 14
