@@ -3,6 +3,7 @@ import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { determineGameState, validateBoard } from "@/lib/utils";
+import { formatISO } from "date-fns";
 
 
 export async function GET(
@@ -82,6 +83,8 @@ export async function PUT(
     }
 
     const body = await request.json();
+    const updatedDate = new Date().toISOString();
+    body.updatedAt = updatedDate;
 
     const [updatedGame] = await db
       .update(games)
