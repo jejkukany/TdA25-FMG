@@ -18,7 +18,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [moves, setMoves] = useState<string[]>([]);
   const nextGameParams = useParams<{ uuid: string }>();
   const router = useRouter();
-  console.log("Modal is opened", isModalOpen);
+
   const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
