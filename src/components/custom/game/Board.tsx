@@ -11,6 +11,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 
+import { VictoryModal } from "./VictoryModal";
+import { useNextGame } from "@/queries/useNextGame";
+import { useParams, useRouter } from "next/navigation";
+
+
 interface BoardProps {
   initialBoard: string[][];
 }
@@ -22,6 +27,11 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [moves, setMoves] = useState<
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
+        const [isModalOpen, setIsModalOpen] = useState(false);
+  const nextGameParams = useParams<{ uuid: string }>();
+  const router = useRouter();
+
+  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -84,6 +94,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 
     if (checkWinner(newBoard, currentPlayer)) {
       setWinner(currentPlayer);
+      setIsModalOpen(true);
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     }
@@ -110,9 +121,35 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     alert("Game saved!");
   };
 
+  const handleNextGame = () => {
+    if (nextGame) {
+      router.push(`/game/${nextGame.uuid}`);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleRematch = () => {
+    setBoard(initialBoard);
+    setCurrentPlayer("X");
+    setWinner(null);
+    setMoves([]);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  
   return (
     <div className="flex flex-col items-center gap-6 2xl:px-8">
       <div className="flex flex-col xl:flex-row gap-6 w-full 2xl:px-0 px-3">
+
+  return (
+    <div className="flex flex-col items-center gap-6 md:p-8 relative">
+      <div className="text-lg font-semibold text-center">
+        Current Player: {currentPlayer}
+      </div>
+      <div className="flex flex-col md:flex-row gap-6 w-full max-w-4xl md:px-0 px-3">
         {/* Board */}
         <div
           className="grid mx-auto rounded-lg border border-gray-400 w-full max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg aspect-square"
@@ -125,6 +162,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
             row.map((cell, cellIndex) => (
               <div
                 key={`${rowIndex}-${cellIndex}`}
+
                 className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center ${
                   rowIndex === 0 && cellIndex === 0
                     ? "rounded-tl-md"
@@ -290,8 +328,20 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
           </Card>
         </div>
       </div>
+
+      {isModalOpen && (
+        <VictoryModal
+          isOpen={isModalOpen}
+          onNextGame={handleNextGame}
+          onRematch={handleRematch}
+          onClose={handleCloseModal}
+          winner={winner}
+        />
+      )}
     </div>
   );
 };
 
 export default Board;
+
+

@@ -47,7 +47,6 @@ export async function GET(
 
     const totalMoves = board.flat().filter((cell) => cell === "X" || cell === "O").length;
     const gameState = determineGameState(board, totalMoves, currentPlayer);
-    console.log(gameState);
 
     // Return the game data with the derived currentPlayer
     return NextResponse.json(
@@ -83,6 +82,8 @@ export async function PUT(
     }
 
     const body = await request.json();
+    const updatedDate = new Date().toISOString();
+    body.updatedAt = updatedDate;
 
     const [updatedGame] = await db
       .update(games)
