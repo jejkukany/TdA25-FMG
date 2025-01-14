@@ -3,6 +3,9 @@
 import Board from "@/components/custom/game/Board";
 import { useParams } from "next/navigation";
 import { useSpecificGame } from "@/queries/useSpecificGame";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function SpecificGame() {
   const gameParams = useParams<{ uuid: string }>();
@@ -23,6 +26,11 @@ export default function SpecificGame() {
 
   return (
     <div className="flex-1 p-8">
+      <Link href={"/games"}>
+        <Button variant={"outline"}>
+          <ArrowLeft />
+        </Button>
+      </Link>
       {game && game.board && <Board initialBoard={game.board} />}
     </div>
   );

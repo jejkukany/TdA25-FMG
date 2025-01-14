@@ -1,16 +1,19 @@
-import { Game as GameType } from "@/types/gameTypes";
+import React from "react";
 import GameCard from "./GameCard";
+import { Game } from "@/types/gameTypes";
 
-type GameListProps = {
-  games: GameType[];
-};
+interface GameListProps {
+  games: Game[];
+}
 
-export default function GameList({ games }: GameListProps) {
+const GameList: React.FC<GameListProps> = ({ games }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {games.map((game) => (
         <GameCard key={game.uuid} game={game} />
       ))}
     </div>
   );
-}
+};
+
+export default GameList;
