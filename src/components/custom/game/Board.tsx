@@ -14,12 +14,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [moves, setMoves] = useState<string[]>([]);
-  const nextGameParams = useParams<{ uuid: string }>();
-  const router = useRouter();
-  console.log("Modal is opened", isModalOpen);
-  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -88,30 +82,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     }
   };
 
-  const handleNextGame = () => {
-    if (nextGame) {
-      router.push(`/game/${nextGame.uuid}`);
-    }
-    setIsModalOpen(false);
-  };
-
-  const handleRematch = () => {
-    setBoard(initialBoard);
-    setCurrentPlayer("X");
-    setWinner(null);
-    setMoves([]);
-    setIsModalOpen(false);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  return (
-    <div className="flex flex-col items-center gap-6 md:p-8 relative">
-      <div className="text-lg font-semibold text-center">
-        Current Player: {currentPlayer}
-      </div>
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-4xl md:px-0 px-3">
         {/* Board */}
         <div
@@ -124,16 +94,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
             row.map((cell, cellIndex) => (
               <div
                 key={`${rowIndex}-${cellIndex}`}
-                className={`border border-gray-300 flex items-center justify-center aspect-square ${rowIndex === 0 && cellIndex === 0
-                  ? "rounded-tl-[7px]"
-                  : rowIndex === 0 && cellIndex === 14
-                    ? "rounded-tr-[7px]"
-                    : rowIndex === 14 && cellIndex === 0
-                      ? "rounded-bl-[7px]"
-                      : rowIndex === 14 && cellIndex === 14
-                        ? "rounded-br-[7px]"
-                        : ""
-                  }`}
+
                 onClick={() => handleCellClick(rowIndex, cellIndex)}
                 style={{ cursor: "pointer" }}
               >
@@ -150,21 +111,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                     alt="X"
                     className="w-3/4 hidden dark:block"
                   />
-                )}
-                {cell === "O" && (
-                  <img
-                    src="/O_cerne.svg"
-                    alt="O"
-                    className="w-3/4 dark:hidden"
-                  />
-                )}
-                {cell === "O" && (
-                  <img
-                    src="/O_bile.svg"
-                    alt="O"
-                    className="w-3/4 hidden dark:block"
-                  />
-                )}
+
               </div>
             )),
           )}
@@ -200,5 +147,3 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 };
 
 export default Board;
-
-

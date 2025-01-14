@@ -16,7 +16,8 @@ const dosis = Dosis({
 
 export const metadata: Metadata = {
   title: "Tic-Tac-Toe",
-  description: "Tic-Tac-Toe Game project made by three young developers for the TourDeApp competition",
+  description:
+    "Tic-Tac-Toe Game project made by three young developers for the TourDeApp competition",
 };
 
 export default async function RootLayout({
@@ -38,8 +39,10 @@ export default async function RootLayout({
           <SidebarProvider defaultOpen={defaultOpen}>
             <SideBar />
             <QueryProvider>
-              <SidebarTrigger />
-              {children}
+              <div className="w-full">
+                <SidebarTrigger />
+                {children}
+              </div>
             </QueryProvider>
           </SidebarProvider>
         </ThemeProvider>

@@ -3,7 +3,7 @@ import Board from "@/components/custom/game/Board";
 
 export default function GamesPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto md:px-4 md:py-8">
       <Board
         initialBoard={Array.from({ length: 15 }, () => Array(15).fill(""))}
       />
