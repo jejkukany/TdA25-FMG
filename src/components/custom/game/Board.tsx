@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { VictoryModal } from "./VictoryModal";
+import { useNextGame } from "@/queries/useNextGame";
+import { useParams, useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
@@ -11,7 +14,12 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [moves, setMoves] = useState<string[]>([]);
+  const nextGameParams = useParams<{ uuid: string }>();
+  const router = useRouter();
+
+  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -74,20 +82,36 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 
     if (checkWinner(newBoard, currentPlayer)) {
       setWinner(currentPlayer);
+      setIsModalOpen(true);
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     }
   };
 
+  const handleNextGame = () => {
+    if (nextGame) {
+      router.push(`/game/${nextGame.uuid}`);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleRematch = () => {
+    setBoard(initialBoard);
+    setCurrentPlayer("X");
+    setWinner(null);
+    setMoves([]);
+    setIsModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="flex flex-col items-center gap-6 md:p-8">
-      {winner ? (
-        <div className="text-xl font-bold text-center">Winner: {winner}</div>
-      ) : (
-        <div className="text-lg font-semibold text-center">
-          Current Player: {currentPlayer}
-        </div>
-      )}
+    <div className="flex flex-col items-center gap-6 md:p-8 relative">
+      <div className="text-lg font-semibold text-center">
+        Current Player: {currentPlayer}
+      </div>
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-4xl md:px-0 px-3">
         {/* Board */}
         <div
@@ -100,17 +124,16 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
             row.map((cell, cellIndex) => (
               <div
                 key={`${rowIndex}-${cellIndex}`}
-                className={`border border-gray-300 flex items-center justify-center aspect-square ${
-                  rowIndex === 0 && cellIndex === 0
-                    ? "rounded-tl-[7px]"
-                    : rowIndex === 0 && cellIndex === 14
-                      ? "rounded-tr-[7px]"
-                      : rowIndex === 14 && cellIndex === 0
-                        ? "rounded-bl-[7px]"
-                        : rowIndex === 14 && cellIndex === 14
-                          ? "rounded-br-[7px]"
-                          : ""
-                }`}
+                className={`border border-gray-300 flex items-center justify-center aspect-square ${rowIndex === 0 && cellIndex === 0
+                  ? "rounded-tl-[7px]"
+                  : rowIndex === 0 && cellIndex === 14
+                    ? "rounded-tr-[7px]"
+                    : rowIndex === 14 && cellIndex === 0
+                      ? "rounded-bl-[7px]"
+                      : rowIndex === 14 && cellIndex === 14
+                        ? "rounded-br-[7px]"
+                        : ""
+                  }`}
                 onClick={() => handleCellClick(rowIndex, cellIndex)}
                 style={{ cursor: "pointer" }}
               >
@@ -162,8 +185,20 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
           </Button>
         </div>
       </div>
+
+      {isModalOpen && (
+        <VictoryModal
+          isOpen={isModalOpen}
+          onNextGame={handleNextGame}
+          onRematch={handleRematch}
+          onClose={handleCloseModal}
+          winner={winner}
+        />
+      )}
     </div>
   );
 };
 
 export default Board;
+
+

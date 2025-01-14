@@ -33,6 +33,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const formatedISODate = new Date().toISOString();
+
     // Determine the game state
     const gameState = determineGameState(
       body.board,
@@ -49,6 +51,8 @@ export async function POST(request: Request) {
         difficulty: body.difficulty,
         board: body.board,
         gameState: gameState,
+        createdAt: formatedISODate,
+        updatedAt: formatedISODate,
       })
       .returning();
 
