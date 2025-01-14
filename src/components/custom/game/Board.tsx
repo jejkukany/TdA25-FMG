@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { VictoryModal } from "./VictoryModal";
+import { useNextGame } from "@/queries/useNextGame";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
@@ -13,6 +16,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const nextGameParams = useParams<{ uuid: string }>();
+  const router = useRouter();
+
+  const { data: nextGame, isLoading, isError, error } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -78,6 +85,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   };
 
   const handleNextGame = () => {
+    if (nextGame) {
+      router.push(`/game/${nextGame.uuid}`);
+      console.log(nextGame.uuid);
+    }
     setIsModalOpen(false);
   };
 
