@@ -39,7 +39,7 @@ export default async function RootLayout({
           <SidebarProvider defaultOpen={defaultOpen}>
             <SideBar />
             <QueryProvider>
-              <div className="w-full">
+              <div className="w-full min-h-screen">
                 <SidebarTrigger />
                 {children}
               </div>

@@ -67,7 +67,7 @@ const Games = () => {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto p-8">
       <div className="mb-6 space-y-4">
         <h1 className="text-3xl font-bold text-center sm:text-left">Games</h1>
         <div className="flex flex-col md:flex-row gap-4">
