@@ -3,7 +3,6 @@ import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
 import { v4 as uuidv4 } from "uuid";
 import { determineGameState, validateBoard } from "@/lib/utils";
-import { formatISO } from "date-fns";
 
 export async function GET() {
   try {
