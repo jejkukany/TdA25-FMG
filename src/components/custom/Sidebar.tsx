@@ -67,7 +67,7 @@ const SideBar = () => {
           )}
         >
           <Image
-            src="/Think-different-Academy_LOGO_oficialni-bile.svg"
+            src="/Think-different-Academy_LOGO_oficialni_1_dark-mode.svg"
             alt="Think Different Academy"
             className={cn(
               "h-12 hidden",
@@ -78,7 +78,7 @@ const SideBar = () => {
             fill
           />
           <Image
-            src="/Think-different-Academy_LOGO_oficialni-cerne.svg"
+            src="/Think-different-Academy_LOGO_oficialni_1.svg"
             alt="Think Different Academy"
             fill
             priority
@@ -89,25 +89,15 @@ const SideBar = () => {
             )}
           />
           <Image
-            src="/Think-different-Academy_LOGO_bily.svg"
+            src="/Think-different-Academy_LOGO_erb.svg"
             alt="Think Different Academy"
             className={cn(
-              state === "collapsed" ? "p-[2.0px] hidden dark:block" : "hidden", // Show on dark mode when collapsed
+              state === "collapsed" ? "p-[2.0px]" : "hidden", // Show on dark mode when collapsed
               isMobile && "hidden", // Hide on mobile view for small logos
             )}
             width={48}
             height={48}
           />
-          <Image
-            src="/Think-different-Academy_LOGO_cerny.svg"
-            alt="Think Different Academy"
-            className={cn(
-              state === "collapsed" ? "block p-[2.0px] dark:hidden" : "hidden", // Show on light mode when collapsed
-              isMobile && "hidden", // Hide on mobile view for small logos
-            )}
-            width={48}
-            height={48}
-          />{" "}
         </div>
       </SidebarHeader>
 
