@@ -140,10 +140,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 
   return (
     <div className="flex flex-col items-center gap-6 2xl:px-8">
-      <div className="flex flex-col xl:flex-row gap-6 w-full 2xl:px-0 px-3">
+      <div className="flex flex-col xl:flex-row gap-6 w-full 2xl:px-0 px-3 justify-center ">
         {/* Board */}
         <div
-          className="grid mx-auto rounded-lg border border-gray-400 w-full max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg aspect-square"
+          className="grid rounded-lg border border-gray-400 w-full max-w-screen-sm lg:max-w-screen-md aspect-square mx-auto xl:mx-0"
           style={{
             gridTemplateColumns: "repeat(15, 1fr)", // Define 15 equally sized columns
             gridTemplateRows: "repeat(15, 1fr)", // Define 15 equally sized rows
@@ -200,7 +200,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
         </div>
 
         {/* Moves and Save */}
-        <div className="flex flex-col lg:w-1/5">
+        <div className="flex flex-col xl:w-1/5 max-w-screen-md xl:max-w-none mx-auto xl:mx-0 w-full">
           <Card className="flex flex-col w-full mb-4">
             <CardHeader>
               <div className="text-2xl font-bold text-center">
