@@ -13,6 +13,8 @@ import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
 import { useNextGame } from "@/queries/useNextGame";
 import { useParams, useRouter } from "next/navigation";
+import { addGame } from "@/queries/useCreateGame";
+import { SaveGameDialog } from "@/components/custom/game/SaveGameDialog";
 
 interface BoardProps {
   initialBoard: string[][];
@@ -26,6 +28,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const nextGameParams = useParams<{ uuid: string }>();
   const router = useRouter();
 
@@ -114,9 +117,12 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     setWinner(null);
   };
 
-  const saveGame = () => {
-    // Implement your save game logic here
-    alert("Game saved!");
+  const saveGame = (name: string, difficulty: string) => {
+    return addGame({
+      board: board,
+      difficulty: difficulty,
+      name: name,
+    });
   };
 
   const handleNextGame = () => {
@@ -200,7 +206,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
         </div>
 
         {/* Moves and Save */}
-        <div className="flex flex-col xl:w-1/5 max-w-screen-md xl:max-w-none mx-auto xl:mx-0 w-full">
+        <div className="flex flex-col xl:w-1/5 max-w-screen-sm lg:max-w-screen-md  mx-auto xl:mx-0 w-full">
           <Card className="flex flex-col w-full mb-4">
             <CardHeader>
               <div className="text-2xl font-bold text-center">
@@ -310,7 +316,11 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
-              <Button className="w-1/2" onClick={saveGame} variant="outline">
+              <Button
+                className="w-1/2"
+                onClick={() => setIsSaveDialogOpen(true)}
+                variant="outline"
+              >
                 <Save className="h-4 w-4 mr-2" />
                 Save Game
               </Button>
@@ -328,6 +338,11 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
           winner={winner}
         />
       )}
+      <SaveGameDialog
+        isOpen={isSaveDialogOpen}
+        onClose={() => setIsSaveDialogOpen(false)}
+        onSave={saveGame}
+      />
     </div>
   );
 };
