@@ -193,28 +193,15 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                   <div className="w-6 h-6 flex justify-center items-center">
                     {currentPlayer === "X" ? (
                       <img
-                        src="/X_cerne.svg"
+                        src="/X_modre.svg"
                         alt="X"
-                        className="w-full h-full dark:hidden"
+                        className="w-full h-full"
                       />
                     ) : (
                       <img
-                        src="/O_cerne.svg"
+                        src="/O_cervene.svg"
                         alt="O"
-                        className="w-full h-full dark:hidden"
-                      />
-                    )}
-                    {currentPlayer === "X" ? (
-                      <img
-                        src="/X_bile.svg"
-                        alt="X"
-                        className="w-full h-full hidden dark:block"
-                      />
-                    ) : (
-                      <img
-                        src="/O_bile.svg"
-                        alt="O"
-                        className="w-full h-full hidden dark:block"
+                        className="w-full h-full"
                       />
                     )}
                   </div>
