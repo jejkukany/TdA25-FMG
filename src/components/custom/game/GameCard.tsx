@@ -5,7 +5,7 @@ import { Game } from "@/types/gameTypes";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchSpecificGame } from "@/queries/useSpecificGame";
-import BoardCardPreview from "./BoardCardPreview";
+import BoardCardPreview from "./Board/BoardCardPreview";
 
 type GameCardProps = {
   game: Game;

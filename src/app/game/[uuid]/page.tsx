@@ -1,6 +1,6 @@
 "use client";
 
-import Board from "@/components/custom/game/Board";
+import Board from "@/components/custom/game/Board/Board";
 import { useParams } from "next/navigation";
 import { useSpecificGame } from "@/queries/useSpecificGame";
 import { Button } from "@/components/ui/button";
