@@ -9,7 +9,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, ArrowRight, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
 import { useNextGame } from "@/queries/useNextGame";
 import { useParams, useRouter } from "next/navigation";
