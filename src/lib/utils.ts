@@ -53,9 +53,9 @@ export const determineGameState = (
 ): string => {
   const xWin = checkEndGame(board, "X");
   const oWin = checkEndGame(board, "O");
-
-  // 1. Check for Endgame (Potential winning move)
   const currentPlayerHasWinningMove = hasPotentialWin(board, currentPlayer);
+
+  // 1. Check for Endgame (Potential winning move or actual win)
   if (xWin || oWin || currentPlayerHasWinningMove) {
     return "endgame";
   }
@@ -65,7 +65,7 @@ export const determineGameState = (
     return "opening";
   }
 
-  // 3. Check for Middle game (6 or more moves, no immediate win)
+  // 3. Check for Midgame (6 or more moves, no immediate win)
   if (totalMoves >= 6) {
     return "midgame";
   }
