@@ -1,6 +1,6 @@
 "use client";
 
-import Board from "@/components/custom/games/Board";
+import Board from "@/components/custom/game/Board/Board";
 import { useParams } from "next/navigation";
 import { useSpecificGame } from "@/queries/useSpecificGame";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,7 @@ import Link from "next/link";
 
 export default function SpecificGame() {
   const gameParams = useParams<{ uuid: string }>();
-  const {
-    data: game,
-    isError,
-    error,
-  } = useSpecificGame(gameParams.uuid);
+  const { data: game, isError, error } = useSpecificGame(gameParams.uuid);
 
   if (isError) {
     return <div>{error.message}</div>;
@@ -26,7 +22,7 @@ export default function SpecificGame() {
           <ArrowLeft />
         </Button>
       </Link>
-      {game && game.board && <Board initialBoard={game.board} startingPlayer={game.currentPlayer} />}
+      {game && game.board && <Board initialBoard={game.board} />}
     </div>
   );
 }

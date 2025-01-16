@@ -1,31 +1,42 @@
-import { Trophy } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Trophy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 interface VictoryModalProps {
-  isOpen: boolean
-  onRematch: () => void
-  onClose: () => void
-  winner: "X" | "O" | null
+  isOpen: boolean;
+  onNextGame: () => void;
+  onRematch: () => void;
+  onClose: () => void;
+  winner: "X" | "O" | null;
 }
 
-// VICTORY MODAL FOR THE /game PAGE WITHOUT onNextGame FUNCTION
-export function VictoryModal({ isOpen, winner, onRematch, onClose }: VictoryModalProps) {
+export function VictoryModal({
+  isOpen,
+  onNextGame,
+  winner,
+  onRematch,
+  onClose,
+}: VictoryModalProps) {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" aria-hidden="true" />
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm"
+          aria-hidden="true"
+        />
       )}
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[300px] bg-card text-card-foreground border-border">
           <DialogHeader className="flex items-center space-y-3">
             <Trophy className="h-8 w-8 text-yellow-400" />
-            <DialogTitle className="text-xl font-bold">Winner: {winner}</DialogTitle>
+            <DialogTitle className="text-xl font-bold">
+              Winner: {winner}
+            </DialogTitle>
           </DialogHeader>
           <div className="flex flex-row gap-2 pt-2">
             <Button
@@ -35,9 +46,15 @@ export function VictoryModal({ isOpen, winner, onRematch, onClose }: VictoryModa
             >
               Play Again
             </Button>
+            <Button
+              onClick={onNextGame}
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Next Game
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }
