@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface SaveGameDialogProps {
   isOpen: boolean;
@@ -34,9 +35,13 @@ export function SaveGameDialog({
   const [difficulty, setDifficulty] = useState("");
 
   const handleSave = () => {
-    onSave(name, difficulty);
-    onClose();
+    if (name.trim() && difficulty) {
+      onSave(name.trim(), difficulty);
+      onClose();
+    }
   };
+
+  const isFormValid = name.trim() !== "" && difficulty !== "";
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -51,6 +56,7 @@ export function SaveGameDialog({
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Name
+              <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -62,6 +68,7 @@ export function SaveGameDialog({
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="difficulty" className="text-right">
               Difficulty
+              <span className="text-red-500">*</span>
             </Label>
             <Select onValueChange={setDifficulty} value={difficulty}>
               <SelectTrigger className="col-span-3">
@@ -79,7 +86,11 @@ export function SaveGameDialog({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
+          <AlertDialogAction asChild>
+            <Button onClick={handleSave} disabled={!isFormValid}>
+              Save
+            </Button>
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

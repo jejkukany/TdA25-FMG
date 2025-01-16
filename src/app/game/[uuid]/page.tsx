@@ -9,16 +9,7 @@ import Link from "next/link";
 
 export default function SpecificGame() {
   const gameParams = useParams<{ uuid: string }>();
-  const {
-    data: game,
-    isLoading,
-    isError,
-    error,
-  } = useSpecificGame(gameParams.uuid);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { data: game, isError, error } = useSpecificGame(gameParams.uuid);
 
   if (isError) {
     return <div>{error.message}</div>;

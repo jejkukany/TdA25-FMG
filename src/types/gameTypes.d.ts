@@ -23,4 +23,5 @@ export type Game = {
   difficulty: DifficultyType;
   gameState: GameState;
   board: BoardState;
+  currentPlayer: "X" | "O";
 };
