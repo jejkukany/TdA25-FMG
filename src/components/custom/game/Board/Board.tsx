@@ -249,19 +249,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                 size="icon"
                 onClick={() => returnPlay(moves.length - 2)}
                 disabled={moves.length <= 1}
+                className="w-full"
               >
                 <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => returnPlay(moves.length)}
-                disabled={
-                  moves.length === 0 ||
-                  moves.length === board.flat().filter(Boolean).length
-                }
-              >
-                <ArrowRight className="h-4 w-4" />
+                Back a turn
               </Button>
             </div>
             <Button
