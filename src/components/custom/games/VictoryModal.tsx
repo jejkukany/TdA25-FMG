@@ -9,13 +9,13 @@ import {
 
 interface VictoryModalProps {
   isOpen: boolean
+  onNextGame: () => void
   onRematch: () => void
   onClose: () => void
   winner: "X" | "O" | null
 }
 
-// VICTORY MODAL FOR THE /game PAGE WITHOUT onNextGame FUNCTION
-export function VictoryModal({ isOpen, winner, onRematch, onClose }: VictoryModalProps) {
+export function VictoryModal({ isOpen, onNextGame, winner, onRematch, onClose }: VictoryModalProps) {
   return (
     <>
       {isOpen && (
@@ -34,6 +34,12 @@ export function VictoryModal({ isOpen, winner, onRematch, onClose }: VictoryModa
               className="flex-1 border-input bg-background hover:bg-accent hover:text-accent-foreground"
             >
               Play Again
+            </Button>
+            <Button
+              onClick={onNextGame}
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Next Game
             </Button>
           </div>
         </DialogContent>

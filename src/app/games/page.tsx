@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useMemo } from "react";
-import GameList from "@/components/custom/game/GameList";
+import GameList from "@/components/custom/games/GameList";
 import { Input } from "@/components/ui/input";
 import {
   Select,

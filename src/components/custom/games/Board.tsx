@@ -11,14 +11,13 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
-import { addGame } from "@/queries/useCreateGame";
-import { SaveGameDialog } from "@/components/custom/game/SaveGameDialog";
+import { useNextGame } from "@/queries/useNextGame";
+import { useParams, useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
 }
 
-// THIS IS THE BOARD COMPONENT FOR /game PAGE WITHOUT Next Game BUTTON
 const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
@@ -27,7 +26,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const nextGameParams = useParams<{ uuid: string }>();
+  const router = useRouter();
+
+  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -112,12 +114,11 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     setWinner(null);
   };
 
-  const saveGame = (name: string, difficulty: string) => {
-    return addGame({
-      board: board,
-      difficulty: difficulty,
-      name: name,
-    });
+  const handleNextGame = () => {
+    if (nextGame) {
+      router.push(`/game/${nextGame.uuid}`);
+    }
+    setIsModalOpen(false);
   };
 
   const handleRematch = () => {
@@ -147,8 +148,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
             row.map((cell, cellIndex) => (
               <div
                 key={`${rowIndex}-${cellIndex}`}
-                className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center ${
-                  rowIndex === 0 && cellIndex === 0
+                className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center ${rowIndex === 0 && cellIndex === 0
                     ? "rounded-tl-md"
                     : rowIndex === 0 && cellIndex === 14
                       ? "rounded-tr-md"
@@ -157,7 +157,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                         : rowIndex === 14 && cellIndex === 14
                           ? "rounded-br-md"
                           : ""
-                }`}
+                  }`}
                 onClick={() => handleCellClick(rowIndex, cellIndex)}
               >
                 {cell === "X" && (
@@ -282,7 +282,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                 ))}
               </ScrollArea>
             </CardContent>
-            <CardFooter className="flex justify-between items-center">
+            <CardFooter className="flex justify-center items-center">
               <div className="flex space-x-2">
                 <Button
                   variant="outline"
@@ -304,14 +304,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
-              <Button
-                className="w-1/2"
-                onClick={() => setIsSaveDialogOpen(true)}
-                variant="outline"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Save Game
-              </Button>
             </CardFooter>
           </Card>
         </div>
@@ -320,16 +312,12 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       {isModalOpen && (
         <VictoryModal
           isOpen={isModalOpen}
+          onNextGame={handleNextGame}
           onRematch={handleRematch}
           onClose={handleCloseModal}
           winner={winner}
         />
       )}
-      <SaveGameDialog
-        isOpen={isSaveDialogOpen}
-        onClose={() => setIsSaveDialogOpen(false)}
-        onSave={saveGame}
-      />
     </div>
   );
 };
