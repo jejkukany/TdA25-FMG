@@ -15,12 +15,13 @@ import { useNextGame } from "@/queries/useNextGame";
 import { useParams, useRouter } from "next/navigation";
 
 interface BoardProps {
-  initialBoard: string[][];
+  initialBoard: string[][],
+  startingPlayer: "X" | "O"
 }
 
-const Board: React.FC<BoardProps> = ({ initialBoard }) => {
+const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
-  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
+  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(startingPlayer);
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
   const [moves, setMoves] = useState<
     { player: "X" | "O"; position: [number, number] }[]

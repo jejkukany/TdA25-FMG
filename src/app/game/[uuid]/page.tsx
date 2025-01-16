@@ -26,7 +26,7 @@ export default function SpecificGame() {
           <ArrowLeft />
         </Button>
       </Link>
-      {game && game.board && <Board initialBoard={game.board} />}
+      {game && game.board && <Board initialBoard={game.board} startingPlayer={game.currentPlayer} />}
     </div>
   );
 }
