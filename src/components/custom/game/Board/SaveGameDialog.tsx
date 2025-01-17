@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -24,15 +24,25 @@ interface SaveGameDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (name: string, difficulty: string) => void;
+  defaultName?: string;
+  defaultDifficulty?: string;
 }
 
 export function SaveGameDialog({
   isOpen,
   onClose,
   onSave,
+  defaultName = "",
+  defaultDifficulty = "",
 }: SaveGameDialogProps) {
-  const [name, setName] = useState("");
-  const [difficulty, setDifficulty] = useState("");
+  const [name, setName] = useState(defaultName);
+  const [difficulty, setDifficulty] = useState(defaultDifficulty);
+
+  // Use effect to reset name and difficulty when dialog is reopened
+  useEffect(() => {
+    setName(defaultName);
+    setDifficulty(defaultDifficulty);
+  }, [defaultName, defaultDifficulty, isOpen]);
 
   const handleSave = () => {
     if (name.trim() && difficulty) {
