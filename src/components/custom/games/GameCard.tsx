@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDeleteGame } from "@/queries/useDeleteGame";
 
 type GameCardProps = {
   game: Game;
@@ -34,8 +35,13 @@ export default function GameCard({ game }: GameCardProps) {
     }
   };
 
+  const { mutate: deleteGame } = useDeleteGame();
+
+  const handleDelete = () => {
+    deleteGame({ uuid: game.uuid });
+  };
   return (
-    <Link href={`/game/${game.uuid}`} className="block w-full lg:max-w-72">
+    <div className="block w-full lg:max-w-72">
       <Card
         onMouseEnter={handleMouseEnter}
         className="h-full transition-shadow hover:shadow-md p-0"
@@ -44,8 +50,8 @@ export default function GameCard({ game }: GameCardProps) {
           <BoardCardPreview board={game.board} />
         </div>
         <CardContent className="pt-2">
-          <CardTitle className="text-lg font-medium line-clamp-1 text-foreground flex flex-row justify-between items-center">
-            {game.name}
+          <CardTitle className="text-lg font-medium  text-foreground flex flex-row justify-between items-center">
+            <p className="truncate">{game.name}</p>
             <span className="flex flex-row gap-3">
               <p className="text-md text-primary">
                 {game.gameState.charAt(0).toUpperCase() +
@@ -56,7 +62,9 @@ export default function GameCard({ game }: GameCardProps) {
           </CardTitle>
         </CardContent>
         <CardFooter className="flex flex-row gap-1 justify-between">
-          <Button className="w-3/4">Play</Button>
+          <Link href={`/game/${game.uuid}`} className="w-3/4">
+            <Button className="w-full">Play</Button>
+          </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="w-1/4" variant={"outline"}>
@@ -64,16 +72,22 @@ export default function GameCard({ game }: GameCardProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem>
-                <Pencil /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">
+              <Link href={`/edit/${game.uuid}`}>
+                <DropdownMenuItem>
+                  <Pencil /> Edit
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => handleDelete()}
+              >
                 <TrashIcon /> Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </CardFooter>
       </Card>
-    </Link>
+    </div>
   );
 }
