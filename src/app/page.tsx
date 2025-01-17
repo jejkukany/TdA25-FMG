@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import ThemeImage from "@/components/custom/ThemeImage";
 
 export default function Home() {
   // Initial empty board or with only a few starting marks
@@ -69,7 +71,7 @@ export default function Home() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="space-y-6 w-full"
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold mb-1">
             Think Different Academy
           </h1>
           <p className="text-muted-foreground">
@@ -78,7 +80,10 @@ export default function Home() {
 
           <div className="space-y-4 flex flex-col">
             <Link href="/game" className="w-1/2">
-              <Button className="w-full h-12 text-lg" size="lg">
+              <Button
+                className="w-full h-10 md:h-12 text-xs sm:text-sm md:text-base font-medium px-2 sm:px-4"
+                size="lg"
+              >
                 Local Multiplayer
               </Button>
             </Link>
@@ -86,7 +91,7 @@ export default function Home() {
             <Link href="/games" className="w-1/2">
               <Button
                 variant="secondary"
-                className="w-full h-12 text-lg"
+                className="w-full h-10 md:h-12 text-xs sm:text-sm md:text-base font-medium px-2 sm:px-4"
                 size="lg"
               >
                 Puzzles
@@ -177,7 +182,7 @@ export default function Home() {
         className="container mx-auto p-4 md:p-6 flex flex-row-reverse gap-8 items-center justify-between w-full h-[75vh]"
       >
         <div className="flex-1 flex flex-col gap-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-1">
             Local Multiplayer
           </h2>
           <p className="text-muted-foreground">Play local with your friends!</p>
@@ -195,7 +200,7 @@ export default function Home() {
           transition={{ duration: 0.6, ease: "backOut" }}
           className="flex-1 flex justify-center"
         >
-          <img src="/O_cervene.svg" alt="Local Multiplayer" className="h-40" />
+          <Image src="/Fighting_HomePage.svg" alt="Local Multiplayer" width={1000} height={1000} />
         </motion.div>
       </motion.section>
 
@@ -210,7 +215,7 @@ export default function Home() {
         className="container mx-auto p-4 md:p-6 flex flex-row gap-8 items-center justify-between w-full h-[75vh]"
       >
         <div className="flex-1 flex flex-col gap-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Puzzles</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-1">Puzzles</h2>
           <p className="text-muted-foreground">Try to resolve our puzzles!</p>
           <div className="flex justify-center">
             <Link href="/games" className="w-1/2">
@@ -220,14 +225,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <motion.div
-          initial={{ scale: 0.8 }}
-          whileInView={{ scale: 1 }}
-          transition={{ duration: 0.6, ease: "backOut" }}
-          className="flex-1 flex justify-center"
-        >
-          <img src="/O_cervene.svg" alt="Puzzles" className="h-40" />
-        </motion.div>
+        <ThemeImage />
       </motion.section>
     </div>
   );
