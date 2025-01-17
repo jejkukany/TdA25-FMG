@@ -225,7 +225,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
                                             )}
                                         </div>
                                         <span className="text-sm">
-                                            played at ({move.position[0] + 1}, {move.position[1] + 1})
+                                        ({move.position[0] + 1}, {move.position[1] + 1})
                                         </span>
                                     </div>
                                 </div>
