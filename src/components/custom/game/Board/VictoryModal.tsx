@@ -22,10 +22,22 @@ export function VictoryModal({
 }: VictoryModalProps) {
   const getWinnerImage = () => {
     if (winner === "X") {
-      return <img src="/X_modre.svg" alt="Winner X" className="w-6 h-6 inline-block" />;
+      return (
+        <img
+          src="/TDA/X_modre.svg"
+          alt="Winner X"
+          className="w-6 h-6 inline-block"
+        />
+      );
     }
     if (winner === "O") {
-      return <img src="/O_cervene.svg" alt="Winner O" className="w-6 h-6 inline-block" />;
+      return (
+        <img
+          src="/TDA/O_cervene.svg"
+          alt="Winner O"
+          className="w-6 h-6 inline-block"
+        />
+      );
     }
     return null;
   };
