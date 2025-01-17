@@ -47,7 +47,7 @@ export default function Home() {
           <div className="flex justify-center items-center w-full">
             <div className="flex flex-wrap rounded-lg border border-gray-400 w-full max-w-sm md:max-w-md aspect-square">
               {board.map((row, rowIndex) =>
-                row.map((cell, cellIndex) => (
+                row.map((cell: string, cellIndex: number) => (
                   <div
                     key={`${rowIndex}-${cellIndex}`}
                     className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center`}
