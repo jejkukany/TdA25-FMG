@@ -9,7 +9,6 @@ import {
 
 interface VictoryModalProps {
   isOpen: boolean;
-  onNextGame: () => void;
   onRematch: () => void;
   onClose: () => void;
   winner: "X" | "O" | null;
@@ -17,11 +16,20 @@ interface VictoryModalProps {
 
 export function VictoryModal({
   isOpen,
-  onNextGame,
   winner,
   onRematch,
   onClose,
 }: VictoryModalProps) {
+  const getWinnerImage = () => {
+    if (winner === "X") {
+      return <img src="/X_modre.svg" alt="Winner X" className="w-6 h-6 inline-block" />;
+    }
+    if (winner === "O") {
+      return <img src="/O_cervene.svg" alt="Winner O" className="w-6 h-6 inline-block" />;
+    }
+    return null;
+  };
+
   return (
     <>
       {isOpen && (
@@ -33,9 +41,9 @@ export function VictoryModal({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[300px] bg-card text-card-foreground border-border">
           <DialogHeader className="flex items-center space-y-3">
-            <Trophy className="h-8 w-8 text-yellow-400" />
+            <Trophy className="h-8 w-8 text-white-400 dark:text-black-400" />
             <DialogTitle className="text-xl font-bold">
-              Winner: {winner}
+              Winner: {getWinnerImage()}
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-row gap-2 pt-2">
@@ -45,12 +53,6 @@ export function VictoryModal({
               className="flex-1 border-input bg-background hover:bg-accent hover:text-accent-foreground"
             >
               Play Again
-            </Button>
-            <Button
-              onClick={onNextGame}
-              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Next Game
             </Button>
           </div>
         </DialogContent>

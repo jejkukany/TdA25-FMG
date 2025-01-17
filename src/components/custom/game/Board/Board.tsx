@@ -11,8 +11,6 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft, Save } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
-import { useNextGame } from "@/queries/useNextGame";
-import { useParams, useRouter } from "next/navigation";
 import { addGame } from "@/queries/useCreateGame";
 import { SaveGameDialog } from "./SaveGameDialog";
 
@@ -29,10 +27,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
-  const nextGameParams = useParams<{ uuid: string }>();
-  const router = useRouter();
-
-  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -123,13 +117,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       difficulty: difficulty,
       name: name,
     });
-  };
-
-  const handleNextGame = () => {
-    if (nextGame) {
-      router.push(`/game/${nextGame.uuid}`);
-    }
-    setIsModalOpen(false);
   };
 
   const handleRematch = () => {
@@ -270,7 +257,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       {isModalOpen && (
         <VictoryModal
           isOpen={isModalOpen}
-          onNextGame={handleNextGame}
           onRematch={handleRematch}
           onClose={handleCloseModal}
           winner={winner}
