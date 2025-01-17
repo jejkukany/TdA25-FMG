@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Piškvorky by FMG
+Vítáme Vás v naší aplikaci👋
+Tento projekt byl tvořen podle zadání [Tour de App](https://tourde.app/zadani) ročníku 2024/25 v rámci soutěže od Think Different Academy.
 
-## Getting Started
+---
 
-First, run the development server:
+## Navigace
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Členové týmu](#členové-týmu)
+- [Použité technologie](#použité-technologie)
+- [Spuštění aplikace](#spuštění-aplikace)
+- [Spuštění aplikace v Dockeru](#spuštění-aplikace-v-dockeru)
+- [Další informace](#další-informace)
+  - [Skripty](#skripty)
+  - [Struktura projektu](#struktura-projektu)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Členové týmu
+- [Daniel Young](https://github.com/jejkukany)
+- [Jakub Majtán](https://github.com/xjakuub1)
+- [Tomáš Martinec](https://github.com/fakeyn)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Použité technologie
+Tento projekt využívá následující technologie:
+- ![Next.js](https://skillicons.dev/icons?i=nextjs) **Next.js**: Framework pro tvorbu webových aplikací v Reactu.
+- ![pnpm](https://skillicons.dev/icons?i=pnpm) **pnpm**: Rychlý a efektivní package manager.
+- <img src="/public/shadcn-ui.svg" width="50" height="50" alt="shadcn/ui Logo" /> **shadcn/ui**: Knihovna pro rychlé vytváření komponentů pro stránky.
+- <svg  xmlns="http://www.w3.org/2000/svg"  width="50"  height="50"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-framer-motion"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12l-8 -8v16l16 -16v16l-4 -4" /><path d="M20 12l-8 8l-4 -4" /></svg> **Framer Motion**: Nástroj pro tvorbu animací.
+- ![TypeScript](https://skillicons.dev/icons?i=ts) **TypeScript**: Jazyk nadstavby JavaScriptu pro silnější typovou kontrolu.
+- ![SQLite](https://skillicons.dev/icons?i=sqlite) **SQLite**: Lehká, serverless databáze pro ukládání dat v aplikaci.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Spuštění aplikace
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Klonování repozitáře**:
+   ```bash
+   git clone https://github.com/jejkukany/TdA25-FMG.git
+   cd TdA25-FMG
+   ```
 
-## Deploy on Vercel
+2. **Instalace závislostí**:  
+   Použijte pnpm pro instalaci všech závislostí:
+   ```bash
+   pnpm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Spuštění vývojového serveru**:
+   ```bash
+   pnpm dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Otevřete aplikaci ve vašem prohlížeči na adrese**:
+   ```
+   http://localhost:3000
+   ```
+
+## Spuštění aplikace v Dockeru
+
+5. **Spuštění v Dockeru**:  
+   Pokud chcete aplikaci spustit v Dockeru, postupujte podle následujících kroků:
+   
+   - **Vytvořte Docker image**:
+     ```bash
+     docker build -t fmg-tda .
+     ```
+   
+   - **Spusťte kontejner**:
+     ```bash
+     docker run -p 3000:3000 fmg-tda
+     ```
+
+   - **Otevřete aplikaci ve vašem prohlížeči na adrese**:
+     ```
+     http://localhost:3000
+     ```
+
+---
+
+## Další informace
+
+### Skripty:
+- `pnpm build`: Sestavení aplikace pro produkční prostředí.
+- `pnpm start`: Spuštění aplikace v produkčním režimu.
+
+### Struktura projektu:  
+Projekt je rozdělen podle doporučených praktik frameworku Next.js, což zahrnuje složky jako `pages`, `components`, a `public`.
+
+---
+## Doufáme, že se Vám bude naše aplikace líbit! 🎉
