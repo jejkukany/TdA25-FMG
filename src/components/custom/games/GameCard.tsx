@@ -3,13 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Game } from "@/types/gameTypes";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { fetchSpecificGame } from "@/queries/useSpecificGame";
 import BoardCardPreview from "./BoardCardPreview";
 import DifficultyIcon from "./DifficultyIcon";
@@ -19,8 +13,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
