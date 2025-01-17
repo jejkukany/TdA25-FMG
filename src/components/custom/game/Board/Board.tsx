@@ -182,7 +182,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
 
       {/* Right Pane */}
       <div className="w-full lg:w-1/4 xl:w-1/5 flex flex-col lg:h-[80vh] lg:max-h-[80vh] lg:gap-2 mt-4 lg:mt-0">
-        <Card className="flex- mb-2">
+        <Card className="mb-2">
           <CardHeader>
             <div className="text-xl sm:text-2xl font-bold text-center">
               {winner ? (

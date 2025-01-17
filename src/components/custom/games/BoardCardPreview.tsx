@@ -37,23 +37,9 @@ const BoardCardPreview = ({ board }: { board: BoardState | null }) => {
                   aria-label={cell === "X" ? "X" : "O"}
                 >
                   {cell === "X" ? (
-                    <>
-                      <img src="/X_cerne.svg" alt="X" className="dark:hidden" />
-                      <img
-                        src="/X_bile.svg"
-                        alt="X"
-                        className="hidden dark:block"
-                      />
-                    </>
+                      <img src="/X_modre.svg" alt="X" />
                   ) : (
-                    <>
-                      <img src="/O_cerne.svg" alt="O" className="dark:hidden" />
-                      <img
-                        src="/O_bile.svg"
-                        alt="O"
-                        className="hidden dark:block"
-                      />
-                    </>
+                      <img src="/O_cervene.svg" alt="O" />
                   )}
                 </span>
               )}

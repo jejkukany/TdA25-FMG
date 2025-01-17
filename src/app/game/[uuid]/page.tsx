@@ -1,6 +1,6 @@
 "use client";
 
-import Board from "@/components/custom/game/Board/Board";
+import Board from "@/components/custom/games/Board";
 import { useParams } from "next/navigation";
 import { useSpecificGame } from "@/queries/useSpecificGame";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export default function SpecificGame() {
           <ArrowLeft />
         </Button>
       </Link>
-      {game && game.board && <Board initialBoard={game.board} />}
+      {game && game.board && <Board initialBoard={game.board} startingPlayer={game.currentPlayer} />}
     </div>
   );
 }
