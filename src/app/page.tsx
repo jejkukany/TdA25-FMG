@@ -2,24 +2,73 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const board = [
+  // Initial empty board or with only a few starting marks
+  const initialBoard = [
     ...Array(5).fill(Array(15).fill("")), // Top empty rows
-    ["", "", "", "", "", "", "X", "O", "X", "O", "", "", "", "", ""],
-    ["", "", "", "", "", "O", "X", "O", "X", "O", "", "", "", "", ""],
-    ["", "", "", "", "", "", "O", "X", "O", "X", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", "X", "O", "X", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", "", "X", "O", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], // Starting state (few moves)
+    ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
     ...Array(5).fill(Array(15).fill("")), // Bottom empty rows
   ];
+
+  const [board, setBoard] = useState(initialBoard);
+  const [moveIndex, setMoveIndex] = useState(0); // Index for the next move
+
+  // Predefined game moves based on the configuration
+  const predefinedMoves = [
+    { row: 7, col: 7, player: "X" }, // First move
+    { row: 7, col: 8, player: "O" }, // Counter move
+    { row: 6, col: 7, player: "X" }, // X starts forming a vertical line
+    { row: 6, col: 8, player: "O" }, // O blocks horizontally
+    { row: 8, col: 7, player: "X" }, // X continues vertical line
+    { row: 8, col: 8, player: "O" }, // O continues blocking
+    { row: 5, col: 7, player: "X" }, // X continues vertical line
+    { row: 9, col: 8, player: "O" }, // O moves in an empty spot
+    { row: 9, col: 7, player: "X" }, // X completes vertical line (wins!)
+    { row: 6, col: 6, player: "O" }, // O tries to create a different line
+    { row: 6, col: 9, player: "X" }, // X counters the move
+    { row: 7, col: 6, player: "O" }, // O tries building horizontally
+    { row: 7, col: 9, player: "X" }, // X secures another potential win
+  ];
+
+  // Function to gradually add moves to the board
+  const makeMove = () => {
+    if (moveIndex >= predefinedMoves.length) return;
+
+    const { row, col, player } = predefinedMoves[moveIndex];
+    const newBoard = [...board];
+    newBoard[row][col] = player; // Place the player's mark on the board
+    setBoard(newBoard);
+
+    setMoveIndex(moveIndex + 1); // Move to the next move in the sequence
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      makeMove(); // Make a move every 1.5 seconds
+    }, 500); // 1000 milliseconds = 1
+    console.log(board);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [moveIndex]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-16">
       {/* Main Content */}
       <main className="container mx-auto p-4 md:p-6 flex flex-row gap-8 items-center justify-between w-full h-[90vh]">
         {/* Call to Action */}
-        <div className="space-y-6 w-full">
+        <motion.div
+          initial={{ opacity: 0, x: -100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="space-y-6 w-full"
+        >
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             Think Different Academy
           </h1>
@@ -44,36 +93,89 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
 
         {/* Game Board */}
-        <div className="flex justify-end items-center w-full">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            duration: 1,
+            type: "spring",
+            stiffness: 150,
+            damping: 12,
+          }}
+          className="flex justify-end items-center w-full"
+        >
           <div className="flex flex-wrap rounded-lg border border-gray-400 max-w-sm md:max-w-md 2xl:max-w-lg aspect-square w-full">
-            {board.map((row, rowIndex) =>
-              row.map((cell, cellIndex) => (
-                <div
-                  key={`${rowIndex}-${cellIndex}`}
-                  className="border border-gray-300 dark:border-gray-600 flex items-center justify-center"
-                  style={{
-                    flexBasis: `${100 / 15}%`,
-                    height: `calc(100% / 15)`,
-                  }}
-                >
-                  {cell === "X" && (
-                    <img src="/X_modre.svg" alt="X" className="w-3/4 h-3/4" />
-                  )}
-                  {cell === "O" && (
-                    <img src="/O_cervene.svg" alt="O" className="w-3/4 h-3/4" />
-                  )}
-                </div>
-              )),
-            )}
+            <AnimatePresence>
+              {board.map((row, rowIndex) =>
+                row.map((cell: string, cellIndex: number) => (
+                  <motion.div
+                    key={`${rowIndex}-${cellIndex}`}
+                    className="border border-gray-300 dark:border-gray-600 flex items-center justify-center"
+                    style={{
+                      flexBasis: `${100 / 15}%`,
+                      height: `calc(100% / 15)`,
+                    }}
+                    layout
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 200,
+                      damping: 15,
+                    }}
+                  >
+                    {cell === "X" && (
+                      <motion.img
+                        src="/X_modre.svg"
+                        alt="X"
+                        className="w-3/4 h-3/4"
+                        initial={{ rotate: 90, scale: 0 }}
+                        animate={{ rotate: 0, scale: 1 }}
+                        exit={{ rotate: -90, scale: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 180,
+                          damping: 10,
+                        }}
+                      />
+                    )}
+                    {cell === "O" && (
+                      <motion.img
+                        src="/O_cervene.svg"
+                        alt="O"
+                        className="w-3/4 h-3/4"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{
+                          duration: 0.4,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    )}
+                  </motion.div>
+                )),
+              )}
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
       </main>
 
       {/* Sections */}
-      <section className="container mx-auto p-4 md:p-6 flex flex-row-reverse gap-8 items-center justify-between w-full h-[75vh]">
+      <motion.section
+        initial={{ opacity: 0, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 0.8,
+          ease: [0.17, 0.67, 0.83, 0.67],
+        }}
+        className="container mx-auto p-4 md:p-6 flex flex-row-reverse gap-8 items-center justify-between w-full h-[75vh]"
+      >
         <div className="flex-1 flex flex-col gap-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Local Multiplayer
@@ -87,12 +189,26 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="flex-1 flex justify-center">
+        <motion.div
+          initial={{ scale: 0.8 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 0.6, ease: "backOut" }}
+          className="flex-1 flex justify-center"
+        >
           <img src="/O_cervene.svg" alt="Local Multiplayer" className="h-40" />
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
-      <section className="container mx-auto p-4 md:p-6 flex flex-row gap-8 items-center justify-between w-full h-[75vh]">
+      <motion.section
+        initial={{ opacity: 0, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 0.8,
+          ease: [0.17, 0.67, 0.83, 0.67],
+        }}
+        className="container mx-auto p-4 md:p-6 flex flex-row gap-8 items-center justify-between w-full h-[75vh]"
+      >
         <div className="flex-1 flex flex-col gap-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Puzzles</h2>
           <p className="text-muted-foreground">Try to resolve our puzzles!</p>
@@ -104,10 +220,15 @@ export default function Home() {
             </Link>
           </div>
         </div>
-        <div className="flex-1 flex justify-center">
+        <motion.div
+          initial={{ scale: 0.8 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 0.6, ease: "backOut" }}
+          className="flex-1 flex justify-center"
+        >
           <img src="/O_cervene.svg" alt="Puzzles" className="h-40" />
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
     </div>
   );
 }
