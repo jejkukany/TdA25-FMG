@@ -1,61 +1,35 @@
-import { BoardState } from "@/types/gameTypes";
-import clsx from "clsx";
 import React from "react";
+import { BoardState } from "@/types/gameTypes";
 
-const BoardCardPreview = ({ board }: { board: BoardState | null }) => {
+const BoardCardPreview: React.FC<{ board: BoardState | null }> = ({
+  board,
+}) => {
   if (!board) return null;
 
   return (
-    <div className="w-full max-w-[240px] aspect-square mx-auto">
-      <div
-        className="grid border border-gray-400 mx-auto w-full max-w-sm rounded-lg overflow-hidden"
-        style={{
-          gridTemplateColumns: "repeat(15, 1fr)",
-        }}
-      >
+    <div className="w-full aspect-square mx-auto">
+      <div className="flex flex-wrap w-full aspect-square shadow-sm">
         {board.map((row, rowIndex) =>
           row.map((cell, cellIndex) => (
             <div
               key={`${rowIndex}-${cellIndex}`}
-              className={clsx(
-                cell !== "" && "bg-",
-                "border border-gray-300 dark:border-gray-600 flex items-center justify-center aspect-square",
+              className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center ${
                 rowIndex === 0 && cellIndex === 0
-                  ? "rounded-tl-[7px]"
+                  ? "rounded-tl-[0.69em]"
                   : rowIndex === 0 && cellIndex === 14
-                    ? "rounded-tr-[7px]"
+                    ? "rounded-tr-[0.69em]"
                     : rowIndex === 14 && cellIndex === 0
-                      ? "rounded-bl-[7px]"
-                      : rowIndex === 14 && cellIndex === 14
-                        ? "rounded-br-[7px]"
-                        : "",
-              )}
+              }`}
+              style={{
+                flexBasis: `${100 / 15}%`,
+                height: `calc(100% / 15)`,
+              }}
             >
-              {cell !== "" && (
-                <span
-                  className="w-full h-full p-[3px]"
-                  aria-label={cell === "X" ? "X" : "O"}
-                >
-                  {cell === "X" ? (
-                    <>
-                      <img src="/X_cerne.svg" alt="X" className="dark:hidden" />
-                      <img
-                        src="/X_bile.svg"
-                        alt="X"
-                        className="hidden dark:block"
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <img src="/O_cerne.svg" alt="O" className="dark:hidden" />
-                      <img
-                        src="/O_bile.svg"
-                        alt="O"
-                        className="hidden dark:block"
-                      />
-                    </>
-                  )}
-                </span>
+              {cell === "X" && (
+                <img src="/TDA/X_modre.svg" alt="X" className="w-3/4 h-3/4" />
+              )}
+              {cell === "O" && (
+                <img src="/TDA/O_cervene.svg" alt="O" className="w-3/4 h-3/4" />
               )}
             </div>
           )),

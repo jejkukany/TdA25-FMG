@@ -9,24 +9,28 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
-import { addGame } from "@/queries/useCreateGame";
-import { SaveGameDialog } from "./SaveGameDialog";
+import { useNextGame } from "@/queries/useNextGame";
+import { useParams, useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
+  startingPlayer: "X" | "O";
 }
 
-const Board: React.FC<BoardProps> = ({ initialBoard }) => {
+const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
-  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
+  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(startingPlayer);
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
   const [moves, setMoves] = useState<
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const nextGameParams = useParams<{ uuid: string }>();
+  const router = useRouter();
+
+  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -111,17 +115,16 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     setWinner(null);
   };
 
-  const saveGame = (name: string, difficulty: string) => {
-    return addGame({
-      board: board,
-      difficulty: difficulty,
-      name: name,
-    });
+  const handleNextGame = () => {
+    if (nextGame) {
+      router.push(`/game/${nextGame.uuid}`);
+    }
+    setIsModalOpen(false);
   };
 
   const handleRematch = () => {
     setBoard(initialBoard);
-    setCurrentPlayer("X");
+    setCurrentPlayer(startingPlayer);
     setWinner(null);
     setMoves([]);
     setIsModalOpen(false);
@@ -242,14 +245,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                 Back a turn
               </Button>
             </div>
-            <Button
-              className="w-full"
-              onClick={() => setIsSaveDialogOpen(true)}
-              variant="outline"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Save Game
-            </Button>
           </CardFooter>
         </Card>
       </div>
@@ -257,16 +252,12 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       {isModalOpen && (
         <VictoryModal
           isOpen={isModalOpen}
+          onNextGame={handleNextGame}
           onRematch={handleRematch}
           onClose={handleCloseModal}
           winner={winner}
         />
       )}
-      <SaveGameDialog
-        isOpen={isSaveDialogOpen}
-        onClose={() => setIsSaveDialogOpen(false)}
-        onSave={saveGame}
-      />
     </div>
   );
 };

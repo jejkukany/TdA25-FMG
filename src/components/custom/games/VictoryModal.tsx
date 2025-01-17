@@ -9,6 +9,7 @@ import {
 
 interface VictoryModalProps {
   isOpen: boolean;
+  onNextGame: () => void;
   onRematch: () => void;
   onClose: () => void;
   winner: "X" | "O" | null;
@@ -16,6 +17,7 @@ interface VictoryModalProps {
 
 export function VictoryModal({
   isOpen,
+  onNextGame,
   winner,
   onRematch,
   onClose,
@@ -54,7 +56,7 @@ export function VictoryModal({
         <DialogContent className="sm:max-w-[300px] bg-card text-card-foreground border-border">
           <DialogHeader className="flex items-center space-y-3">
             <Trophy className="h-8 w-8 text-white-400 dark:text-black-400" />
-            <DialogTitle className="text-xl font-bold">
+            <DialogTitle className="text-xl font-bold flex items-center gap-2">
               Winner: {getWinnerImage()}
             </DialogTitle>
           </DialogHeader>
@@ -65,6 +67,12 @@ export function VictoryModal({
               className="flex-1 border-input bg-background hover:bg-accent hover:text-accent-foreground"
             >
               Play Again
+            </Button>
+            <Button
+              onClick={onNextGame}
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Next Game
             </Button>
           </div>
         </DialogContent>

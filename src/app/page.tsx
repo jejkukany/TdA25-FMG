@@ -134,23 +134,6 @@ export default function Home() {
                     }}
                   >
                     {cell === "X" && (
-                      <motion.img
-                        src="/X_modre.svg"
-                        alt="X"
-                        className="w-3/4 h-3/4"
-                        initial={{ rotate: 90, scale: 0 }}
-                        animate={{ rotate: 0, scale: 1 }}
-                        exit={{ rotate: -90, scale: 0 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 180,
-                          damping: 10,
-                        }}
-                      />
-                    )}
-                    {cell === "O" && (
-                      <motion.img
-                        src="/O_cervene.svg"
                         alt="O"
                         className="w-3/4 h-3/4"
                         initial={{ scale: 0, opacity: 0 }}
