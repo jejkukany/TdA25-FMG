@@ -28,7 +28,8 @@ Tento projekt využívá následující technologie:
 - ![Next.js](https://skillicons.dev/icons?i=nextjs) **Next.js**: Framework pro tvorbu webových aplikací v Reactu.
 - ![pnpm](https://skillicons.dev/icons?i=pnpm) **pnpm**: Rychlý a efektivní package manager.
 - <img src="/public/shadcnui.png" width="50" height="50" alt="shadcn/ui Logo" />**shadcn/ui**: Knihovna pro rychlé vytváření komponentů pro stránky.
-- <img src="/public/framermotion.png" width="50" height="50" alt="shadcn/ui Logo" />**Framer Motion**: Nástroj pro tvorbu animací.
+- <img src="/public/framermotion.png" width="50" height="50" alt="Framer Motion Logo" />**Framer Motion**: Nástroj pro tvorbu animací.
+- <img src="/public/tanstack.png" width="50" height="50" alt="TanStack Query Logo" />**TanStack Query**: Nadupaná technologie pro lepší správu queries, efektivitu a plynulost.
 - ![TypeScript](https://skillicons.dev/icons?i=ts) **TypeScript**: Jazyk nadstavby JavaScriptu pro silnější typovou kontrolu.
 - ![SQLite](https://skillicons.dev/icons?i=sqlite) **SQLite**: Lehká, serverless databáze pro ukládání dat v aplikaci.
 
