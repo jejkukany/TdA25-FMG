@@ -57,11 +57,15 @@ export default function Home() {
                     }}
                   >
                     {cell === "X" && (
-                      <img src="/X_modre.svg" alt="X" className="w-3/4 h-3/4" />
+                      <img
+                        src="/TDA/X_modre.svg"
+                        alt="X"
+                        className="w-3/4 h-3/4"
+                      />
                     )}
                     {cell === "O" && (
                       <img
-                        src="/O_cervene.svg"
+                        src="/TDA/O_cervene.svg"
                         alt="O"
                         className="w-3/4 h-3/4"
                       />

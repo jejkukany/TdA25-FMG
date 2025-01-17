@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useGames } from "@/queries/useGames";
 import { DifficultyType, GameState } from "@/types/gameTypes";
-
+import Image from "next/image";
 const difficultyOptions: DifficultyType[] = [
   "beginner",
   "easy",
@@ -91,7 +91,15 @@ const Games = () => {
                 <SelectItem value="all">All Difficulties</SelectItem>
                 {difficultyOptions.map((difficulty) => (
                   <SelectItem key={difficulty} value={difficulty}>
-                    {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                    <div className="flex flex-row gap-2 ">
+                      <Image
+                        src={`/TDA/zarivka_${difficulty}_modre.svg`}
+                        alt={`${difficulty} difficulty`}
+                        width={24}
+                        height={24}
+                      />
+                      {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>

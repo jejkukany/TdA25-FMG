@@ -157,10 +157,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
               onClick={() => handleCellClick(rowIndex, cellIndex)}
             >
               {cell === "X" && (
-                <img src="/X_modre.svg" alt="X" className="w-3/4 h-3/4" />
+                <img src="/TDA/X_modre.svg" alt="X" className="w-3/4 h-3/4" />
               )}
               {cell === "O" && (
-                <img src="/O_cervene.svg" alt="O" className="w-3/4 h-3/4" />
+                <img src="/TDA/O_cervene.svg" alt="O" className="w-3/4 h-3/4" />
               )}
             </div>
           )),
@@ -180,13 +180,13 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                   <div className="w-6 h-6 flex justify-center items-center">
                     {currentPlayer === "X" ? (
                       <img
-                        src="/X_modre.svg"
+                        src="/TDA/X_modre.svg"
                         alt="X"
                         className="w-full h-full"
                       />
                     ) : (
                       <img
-                        src="/O_cervene.svg"
+                        src="/TDA/O_cervene.svg"
                         alt="O"
                         className="w-full h-full"
                       />
@@ -209,13 +209,13 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
                     <div className="w-6 h-6 flex items-center justify-center">
                       {move.player === "X" ? (
                         <img
-                          src="/X_modre.svg"
+                          src="/TDA/X_modre.svg"
                           alt="X"
                           className="w-full h-full"
                         />
                       ) : (
                         <img
-                          src="/O_cervene.svg"
+                          src="/TDA/O_cervene.svg"
                           alt="O"
                           className="w-full h-full"
                         />
