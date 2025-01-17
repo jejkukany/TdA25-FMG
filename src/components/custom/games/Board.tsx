@@ -13,7 +13,6 @@ import { ArrowLeft } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
 import { useNextGame } from "@/queries/useNextGame";
 import { useParams, useRouter } from "next/navigation";
-import { addGame } from "@/queries/useCreateGame";
 
 interface BoardProps {
     initialBoard: string[][];
