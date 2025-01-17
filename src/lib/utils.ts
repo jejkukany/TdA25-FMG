@@ -77,24 +77,50 @@ export const determineGameState = (
 export const checkEndGame = (board: string[][], symbol: string): boolean => {
   const size = board.length;
 
-  const checkWin = (row: number, col: number, dRow: number, dCol: number) => {
+  const checkPotential = (
+    row: number,
+    col: number,
+    dRow: number,
+    dCol: number,
+  ) => {
+    let count = 0;
+    let gaps = 0;
+
     for (let i = 0; i < 5; i++) {
       const r = row + i * dRow;
       const c = col + i * dCol;
-      if (r < 0 || c < 0 || r >= size || c >= size || board[r][c] !== symbol) {
-        return false;
+
+      if (r < 0 || c < 0 || r >= size || c >= size) {
+        return false; // Outside bounds
       }
+
+      const cell = board[r][c];
+      if (cell === symbol) {
+        count++;
+      } else if (cell === "") {
+        gaps++;
+      } else {
+        return false; // Opponent's piece blocks the potential win
+      }
+
+      if (gaps > 1) return false; // Too many gaps
     }
-    return true; // Exactly 5 in a row
+
+    return count === 4 && gaps === 1; // Exactly 4 with one gap
   };
 
   for (let row = 0; row < size; row++) {
     for (let col = 0; col < size; col++) {
+      // Check all 8 directions explicitly
       if (
-        checkWin(row, col, 0, 1) || // Horizontal
-        checkWin(row, col, 1, 0) || // Vertical
-        checkWin(row, col, 1, 1) || // Diagonal down-right
-        checkWin(row, col, 1, -1) // Diagonal down-left
+        checkPotential(row, col, 0, 1) || // Horizontal right
+        checkPotential(row, col, 0, -1) || // Horizontal left
+        checkPotential(row, col, 1, 0) || // Vertical down
+        checkPotential(row, col, -1, 0) || // Vertical up
+        checkPotential(row, col, 1, 1) || // Diagonal down-right
+        checkPotential(row, col, -1, -1) || // Diagonal up-left
+        checkPotential(row, col, 1, -1) || // Diagonal down-left
+        checkPotential(row, col, -1, 1) // Diagonal up-right
       ) {
         return true;
       }
@@ -141,11 +167,16 @@ export const hasPotentialWin = (board: string[][], symbol: string): boolean => {
 
   for (let row = 0; row < size; row++) {
     for (let col = 0; col < size; col++) {
+      // Check all 8 directions explicitly
       if (
-        checkPotential(row, col, 0, 1) || // Horizontal
-        checkPotential(row, col, 1, 0) || // Vertical
+        checkPotential(row, col, 0, 1) || // Horizontal right
+        checkPotential(row, col, 0, -1) || // Horizontal left
+        checkPotential(row, col, 1, 0) || // Vertical down
+        checkPotential(row, col, -1, 0) || // Vertical up
         checkPotential(row, col, 1, 1) || // Diagonal down-right
-        checkPotential(row, col, 1, -1) // Diagonal down-left
+        checkPotential(row, col, -1, -1) || // Diagonal up-left
+        checkPotential(row, col, 1, -1) || // Diagonal down-left
+        checkPotential(row, col, -1, 1) // Diagonal up-right
       ) {
         return true;
       }
