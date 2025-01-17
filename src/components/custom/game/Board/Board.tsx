@@ -145,9 +145,9 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-8 lg:gap-6 min-h-screen">
+    <div className="flex flex-col lg:flex-row items-center max-h-screen justify-center p-4 sm:p-6 lg:p-8 lg:gap-6 my-auto">
       {/* Board */}
-      <div className="flex flex-wrap rounded-lg border border-gray-400 w-full max-w-[80vh] aspect-square">
+      <div className="flex flex-wrap rounded-lg border border-gray-400 h-[50%] w-full sm:w-[100%] md:w-[100%] lg:w-[60%] xl:max-w-screen-md aspect-square flex-1">
         {board.map((row, rowIndex) =>
           row.map((cell, cellIndex) => (
             <div
@@ -210,12 +210,12 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
             </div>
           </CardHeader>
         </Card>
-        <Card className="flex flex-col flex-grow">
+        <Card className="flex flex-col flex-1">
           <CardHeader className="pb-2">
             <div className="text-lg font-bold">Moves:</div>
           </CardHeader>
           <CardContent className="flex-grow p-0">
-            <ScrollArea className="flex-grow w-full p-4 h-[calc(100%-120px)]">
+            <ScrollArea className="flex-1 w-full p-4 scroll ">
               {moves.map((move, index) => (
                 <div key={index} className="flex items-center mb-2">
                   <div className="flex items-center space-x-2">
