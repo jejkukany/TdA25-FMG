@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ export default function NotFound() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/')
+      router.push("/")
     }, 5000)
 
     const interval = setInterval(() => {
@@ -38,7 +38,7 @@ export default function NotFound() {
             onClick={handleGoBack}
             className="px-4 py-2 w-full bg-primary text-white rounded hover:bg-primary/90 transition-colors"
           >
-            <p className='font-semibold'>Go Back</p>
+            <p className="font-semibold">Go Back</p>
         </Button>
       </div>
     </div>
