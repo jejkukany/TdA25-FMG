@@ -27,11 +27,13 @@ Tento projekt byl tvořen podle zadání [Tour de App](https://tourde.app/zadani
 Tento projekt využívá následující technologie:
 - ![Next.js](https://skillicons.dev/icons?i=nextjs) **Next.js**: Framework pro tvorbu webových aplikací v Reactu.
 - ![pnpm](https://skillicons.dev/icons?i=pnpm) **pnpm**: Rychlý a efektivní package manager.
-- <img src="/public/shadcnui.png" width="50" height="50" alt="shadcn/ui Logo" />**shadcn/ui**: Knihovna pro rychlé vytváření komponentů pro stránky.
-- <img src="/public/framermotion.png" width="50" height="50" alt="Framer Motion Logo" />**Framer Motion**: Nástroj pro tvorbu animací.
-- <img src="/public/tanstack.png" width="50" height="50" alt="TanStack Query Logo" />**TanStack Query**: Nadupaná technologie pro lepší správu queries, efektivitu a plynulost.
+- <img src="/public/README/shadcnui.png" width="50" height="50" alt="shadcn/ui Logo" />**shadcn/ui**: Knihovna pro rychlé vytváření komponentů pro stránky.
+- <img src="/public/README/framermotion.png" width="50" height="50" alt="Framer Motion Logo" />**Framer Motion**: Nástroj pro tvorbu animací.
+- <img src="/public/README/tanstack.png" width="50" height="50" alt="TanStack Query Logo" />**TanStack Query**: Nadupaná technologie pro lepší správu queries, efektivitu a plynulost.
 - ![TypeScript](https://skillicons.dev/icons?i=ts) **TypeScript**: Jazyk nadstavby JavaScriptu pro silnější typovou kontrolu.
 - ![SQLite](https://skillicons.dev/icons?i=sqlite) **SQLite**: Lehká, serverless databáze pro ukládání dat v aplikaci.
+- ![Tailwind CSS](https://skillicons.dev/icons?i=tailwind) **Tailwind CSS**: CSS framework pro rychlé vytváření moderních designů.
+- <img src="/public/README/drizzleorm.png" width="50" height="50" alt="Drizzle ORM Logo" />**Drizzle ORM**: SQL ORM zaměřené na typovou bezpečnost a jednoduché používání.
 
 ---
 
