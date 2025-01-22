@@ -13,10 +13,11 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Save } from "lucide-react";
+import { Eraser, Save } from "lucide-react";
 import { SaveGameDialog } from "../game/Board/SaveGameDialog";
 import { updateGame } from "@/queries/useUpdateGame";
 import { validateBoard } from "@/lib/utils"; // Import the validateBoard function
+import { useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
@@ -34,7 +35,8 @@ const Board: React.FC<BoardProps> = ({
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
-
+  const router = useRouter();
+  
   const checkWinner = (board: string[][]): string | null => {
     const size = board.length;
     for (let row = 0; row < size; row++) {
@@ -115,6 +117,12 @@ const Board: React.FC<BoardProps> = ({
     }
   };
 
+  const clearBoard = () => {
+    const newBoard = board.map((row) => [...row]);
+    newBoard.forEach((row) => row.fill(""));
+    setBoard(newBoard);
+  };
+
   const saveGame = (name: string, difficulty: string) => {
     // Validate board before saving
     const validationError = validateBoard(board, getCurrentPlayer());
@@ -131,6 +139,7 @@ const Board: React.FC<BoardProps> = ({
 
     // If validation passes, update the game
     setErrorMessage(null); // Clear error message if validation passes
+    router.push("/games");
     return updateGame({
       uuid: uuid,
       board: board,
@@ -187,6 +196,16 @@ const Board: React.FC<BoardProps> = ({
           <CardFooter className="flex flex-col space-y-2">
             <TooltipProvider>
               <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="w-full"
+                    onClick={() => clearBoard()}
+                    variant="outline"
+                  >
+                    <Eraser className="h-4 w-4 mr-2" />
+                    Clear Board
+                  </Button>
+                </TooltipTrigger>
                 <TooltipTrigger asChild>
                   <Button
                     className="w-full"
