@@ -20,6 +20,7 @@ export default function SpecificGame() {
           uuid={gameParams.uuid}
           name={game.name}
           difficulty={game.difficulty}
+          startingPlayer={game.currentPlayer}
         />
       )}
     </div>
