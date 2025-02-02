@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,14 +18,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Eraser, Save } from "lucide-react";
 import { SaveGameDialog } from "../game/Board/SaveGameDialog";
 import { updateGame } from "@/queries/useUpdateGame";
-import { validateBoard } from "@/lib/utils"; // Import the validateBoard function
+import { validateBoard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BoardProps {
   initialBoard: string[][];
   uuid: string;
   name: string;
   difficulty: string;
+  startingPlayer: "X" | "O";
 }
 
 const Board: React.FC<BoardProps> = ({
@@ -31,13 +35,17 @@ const Board: React.FC<BoardProps> = ({
   uuid,
   name,
   difficulty,
+  startingPlayer,
 }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
+  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(startingPlayer);
+  const [winner, setWinner] = useState<"X" | "O" | null>(null);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
-  
-  const checkWinner = (board: string[][]): string | null => {
+  const queryClient = useQueryClient();
+
+  const checkWinner = (board: string[][]): "X" | "O" | null => {
     const size = board.length;
     for (let row = 0; row < size; row++) {
       for (let col = 0; col <= size - 5; col++) {
@@ -86,65 +94,78 @@ const Board: React.FC<BoardProps> = ({
     return null;
   };
 
-  const getCurrentPlayer = () => {
-    const xCount = board.flat().filter((cell) => cell === "X").length;
-    const oCount = board.flat().filter((cell) => cell === "O").length;
-
-    return xCount > oCount ? "O" : "X"; // X goes first, if counts are equal or O has fewer, it's X's turn
-  };
-
   const handleCellClick = (rowIndex: number, cellIndex: number) => {
-    const currentPlayer = getCurrentPlayer();
-    const newBoard = [...board];
-    const currentValue = newBoard[rowIndex][cellIndex];
+    setBoard((prevBoard) => {
+      const newBoard = prevBoard.map((row) => [...row]); // Create a copy
+      const xCount = newBoard.flat().filter((cell) => cell === "X").length;
+      const oCount = newBoard.flat().filter((cell) => cell === "O").length;
 
-    if (currentValue === "") {
-      newBoard[rowIndex][cellIndex] = currentPlayer; // Place current player's mark
-    } else if (currentValue === "X") {
-      newBoard[rowIndex][cellIndex] = "O"; // Toggle between X and O
-    } else {
-      newBoard[rowIndex][cellIndex] = ""; // Reset to empty
-    }
+      if (newBoard[rowIndex][cellIndex] === "X") {
+        if (xCount <= oCount) {
+          setErrorMessage("Invalid move: X must be placed.");
+          return prevBoard;
+        }
+        newBoard[rowIndex][cellIndex] = "";
+      } else if (newBoard[rowIndex][cellIndex] === "O") {
+        if (oCount < xCount) {
+          setErrorMessage("Invalid move: O must be placed.");
+          return prevBoard;
+        }
+        newBoard[rowIndex][cellIndex] = "";
+      } else if (newBoard[rowIndex][cellIndex] === "") {
+        newBoard[rowIndex][cellIndex] = currentPlayer;
+        setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+      }
 
-    setBoard(newBoard);
+      const newWinner = checkWinner(newBoard);
+      setWinner(newWinner);
 
-    // Validate the board after the move
-    const validationError = validateBoard(newBoard, currentPlayer);
-    if (validationError) {
-      setErrorMessage(validationError); // Set the error message if board is invalid
-    } else {
-      setErrorMessage(null); // Clear error message if validation passes
-    }
+      setErrorMessage(null);
+      return newBoard;
+    });
   };
 
   const clearBoard = () => {
     const newBoard = board.map((row) => [...row]);
     newBoard.forEach((row) => row.fill(""));
     setBoard(newBoard);
+    setCurrentPlayer("X");
+    setWinner(null);
+    setErrorMessage(null); // Clear error message when board is cleared
+  };
+
+  const isBoardEmpty = (board: string[][]): boolean => {
+    return board.flat().every((cell) => cell === "");
   };
 
   const saveGame = (name: string, difficulty: string) => {
     // Validate board before saving
-    const validationError = validateBoard(board, getCurrentPlayer());
+    const validationError = validateBoard(board, currentPlayer);
     if (validationError) {
-      setErrorMessage(validationError); // Set the error message if board is invalid
+      setErrorMessage(validationError);
       return;
     }
 
-    const winner = checkWinner(board);
     if (winner) {
-      alert("Board is invalid because there is already a winner.");
+      alert("Cannot save because there is already a winner.");
       return;
     }
 
-    // If validation passes, update the game
-    setErrorMessage(null); // Clear error message if validation passes
+    if (isBoardEmpty(board)) {
+      setErrorMessage("Cannot save an empty board.");
+      return;
+    }
+
+    setErrorMessage(null);
     router.push("/games");
-    return updateGame({
-      uuid: uuid,
-      board: board,
-      difficulty: difficulty,
-      name: name,
+
+    updateGame({
+      uuid,
+      board,
+      difficulty,
+      name,
+    }).then(() => {
+      queryClient.invalidateQueries({ queryKey: ["game", uuid] });
     });
   };
 
@@ -155,17 +176,16 @@ const Board: React.FC<BoardProps> = ({
           row.map((cell, cellIndex) => (
             <div
               key={`${rowIndex}-${cellIndex}`}
-              className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center ${
-                rowIndex === 0 && cellIndex === 0
-                  ? "rounded-tl-md"
-                  : rowIndex === 0 && cellIndex === 14
-                    ? "rounded-tr-md"
-                    : rowIndex === 14 && cellIndex === 0
-                      ? "rounded-bl-md"
-                      : rowIndex === 14 && cellIndex === 14
-                        ? "rounded-br-md"
-                        : ""
-              }`}
+              className={`border border-gray-300 dark:border-gray-600 flex items-center justify-center ${rowIndex === 0 && cellIndex === 0
+                ? "rounded-tl-md"
+                : rowIndex === 0 && cellIndex === 14
+                  ? "rounded-tr-md"
+                  : rowIndex === 14 && cellIndex === 0
+                    ? "rounded-bl-md"
+                    : rowIndex === 14 && cellIndex === 14
+                      ? "rounded-br-md"
+                      : ""
+                }`}
               style={{
                 flexBasis: `${100 / 15}%`,
                 height: `calc(100% / 15)`,
@@ -184,13 +204,49 @@ const Board: React.FC<BoardProps> = ({
       </div>
 
       <div className="w-full lg:w-1/4 xl:w-1/5 flex flex-col lg:h-[80vh] lg:max-h-[80vh] lg:gap-2 mt-4 lg:mt-0">
+        <Card className="mb-2">
+          <CardHeader>
+            <div className="text-xl sm:text-2xl font-bold text-center">
+
+              <div className="flex items-center justify-center space-x-2">
+                <span className="text-sm sm:text-md">Current Player:</span>
+                <div className="w-6 h-6 flex justify-center items-center">
+                  {currentPlayer === "X" ? (
+                    <img
+                      src="/TDA/X_modre.svg"
+                      alt="X"
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <img
+                      src="/TDA/O_cervene.svg"
+                      alt="O"
+                      className="w-full h-full"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
         <Card className="flex flex-col flex-grow">
           <CardHeader className="pb-2">
-            <div className="text-lg font-bold">Moves:</div>
+            <div className="text-md font-bold flex flex-col space-y-2">
+              <div className="items-center">
+                <span>Clicking on either</span>
+                <img src="/TDA/X_modre.svg" className="w-4 h-4 mx-1 inline-block" alt="X" />
+                <span>or</span>
+                <img src="/TDA/O_cervene.svg" className="w-4 h-4 mx-1 inline-block" alt="O" />
+                <span>will replace the symbol with an empty space</span>
+              </div>
+              <div>
+                Clicking on an empty space will place the Current Player symbol
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="flex-grow p-0">
             <ScrollArea className="flex-grow w-full p-4 h-[calc(100%-120px)]">
-              {/* No moves list for now since no moves tracking */}
+              {/* Moves list removed */}
             </ScrollArea>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
@@ -211,7 +267,7 @@ const Board: React.FC<BoardProps> = ({
                     className="w-full"
                     onClick={() => setIsSaveDialogOpen(true)}
                     variant="outline"
-                    disabled={!!errorMessage} // Disable button if there is an error
+                    disabled={!!errorMessage || !!winner || isBoardEmpty(board)}
                   >
                     <Save className="h-4 w-4 mr-2" />
                     Save Game
@@ -219,7 +275,7 @@ const Board: React.FC<BoardProps> = ({
                 </TooltipTrigger>
                 {errorMessage && (
                   <TooltipContent>
-                    <p>Invalid Board</p>
+                    <p>{errorMessage}</p>
                   </TooltipContent>
                 )}
               </Tooltip>
