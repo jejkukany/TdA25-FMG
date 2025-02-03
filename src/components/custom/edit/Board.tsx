@@ -18,7 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Eraser, Save } from "lucide-react";
 import { SaveGameDialog } from "../game/Board/SaveGameDialog";
 import { updateGame } from "@/queries/useUpdateGame";
-import { validateBoard } from "@/lib/utils";
+import { cn, validateBoard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -44,6 +44,7 @@ const Board: React.FC<BoardProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
+  console.log(errorMessage);
 
   const checkWinner = (board: string[][]): "X" | "O" | null => {
     const size = board.length;
@@ -131,7 +132,7 @@ const Board: React.FC<BoardProps> = ({
     setBoard(newBoard);
     setCurrentPlayer("X");
     setWinner(null);
-    setErrorMessage(null); // Clear error message when board is cleared
+    setErrorMessage("Cannot save an empty board");
   };
 
   const isBoardEmpty = (board: string[][]): boolean => {
@@ -147,16 +148,16 @@ const Board: React.FC<BoardProps> = ({
     }
 
     if (winner) {
+      setErrorMessage("Cannot save because there is already a winner.");
       alert("Cannot save because there is already a winner.");
       return;
-    }
-
-    if (isBoardEmpty(board)) {
+    } else if (isBoardEmpty(board)) {
       setErrorMessage("Cannot save an empty board.");
       return;
+    } else {
+      setErrorMessage(null);
     }
 
-    setErrorMessage(null);
     router.push("/games");
 
     updateGame({
@@ -168,6 +169,8 @@ const Board: React.FC<BoardProps> = ({
       queryClient.invalidateQueries({ queryKey: ["game", uuid] });
     });
   };
+
+  const isDisabled = !!winner || isBoardEmpty(board)
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-8 lg:gap-6 min-h-screen">
@@ -250,34 +253,30 @@ const Board: React.FC<BoardProps> = ({
             </ScrollArea>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
+            <Button
+              className="w-full"
+              onClick={() => clearBoard()}
+              variant="outline"
+            >
+              <Eraser className="h-4 w-4 mr-2" />
+              Clear Board
+            </Button>
             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="w-full"
-                    onClick={() => clearBoard()}
-                    variant="outline"
-                  >
-                    <Eraser className="h-4 w-4 mr-2" />
-                    Clear Board
-                  </Button>
-                </TooltipTrigger>
+              <Tooltip open={!!errorMessage}>
                 <TooltipTrigger asChild>
                   <Button
                     className="w-full"
                     onClick={() => setIsSaveDialogOpen(true)}
                     variant="outline"
-                    disabled={!!errorMessage || !!winner || isBoardEmpty(board)}
+                    disabled={isDisabled}
                   >
                     <Save className="h-4 w-4 mr-2" />
                     Save Game
                   </Button>
                 </TooltipTrigger>
-                {errorMessage && (
-                  <TooltipContent>
-                    <p>{errorMessage}</p>
-                  </TooltipContent>
-                )}
+                <TooltipContent>
+                  <p>{errorMessage}</p>
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </CardFooter>
