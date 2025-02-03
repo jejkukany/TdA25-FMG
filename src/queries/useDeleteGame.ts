@@ -11,19 +11,17 @@ export const deleteGame = async (game: { uuid: string }) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        ...game,
-      }),
     });
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    // Check if the response has content
+    const data = response.status !== 204 ? await response.json() : null;
     return data;
   } catch (error) {
-    console.error("Error updating game:", error);
+    console.error("Error deleting game:", error);
     throw error;
   }
 };
@@ -31,6 +29,6 @@ export const deleteGame = async (game: { uuid: string }) => {
 // React Query hook for creating games
 export const useDeleteGame = () =>
   useMutation<GameType, Error, { uuid: string }>({
-    mutationKey: ["createGame"],
+    mutationKey: ["deleteGame"],
     mutationFn: deleteGame,
   });

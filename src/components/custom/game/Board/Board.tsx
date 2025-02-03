@@ -13,6 +13,7 @@ import { ArrowLeft, Save } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
 import { addGame } from "@/queries/useCreateGame";
 import { SaveGameDialog } from "./SaveGameDialog";
+import { useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
@@ -27,6 +28,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const router = useRouter();
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -112,6 +114,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   };
 
   const saveGame = (name: string, difficulty: string) => {
+    router.push("/games");
     return addGame({
       board: board,
       difficulty: difficulty,
