@@ -18,7 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Eraser, Save } from "lucide-react";
 import { SaveGameDialog } from "../game/Board/SaveGameDialog";
 import { updateGame } from "@/queries/useUpdateGame";
-import { cn, validateBoard } from "@/lib/utils";
+import { validateBoard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
