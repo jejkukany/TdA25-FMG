@@ -22,7 +22,7 @@ export function DeleteGameModal({ isOpen, onClose, onConfirm, gameName }: Delete
         <DialogHeader>
           <DialogTitle>Confirm Deletion</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the game "{gameName}"? This action cannot be undone.
+            Are you sure you want to delete the game {gameName}? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
