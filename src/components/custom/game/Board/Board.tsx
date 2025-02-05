@@ -114,11 +114,17 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   };
 
   const saveGame = (name: string, difficulty: string) => {
-    router.push("/games");
-    return addGame({
+    if (winner) {
+      alert("Cannot save because there is already a winner.");
+      return;
+    }
+
+    addGame({
       board: board,
       difficulty: difficulty,
       name: name,
+    }).then((savedGame) => {
+      router.push(`/game/${savedGame.uuid}`);
     });
   };
 
@@ -249,6 +255,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
               className="w-full"
               onClick={() => setIsSaveDialogOpen(true)}
               variant="outline"
+              disabled={!!winner}
             >
               <Save className="h-4 w-4 mr-2" />
               Save Game
