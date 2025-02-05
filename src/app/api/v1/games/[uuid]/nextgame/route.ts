@@ -5,10 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { uuid: string } },
+    { params }: { params: Promise<{ uuid: string }> },
 ) {
     try {
-        const currentGameUuid = params.uuid;
+        const currentGameUuid = (await params).uuid;
 
         if (!currentGameUuid) {
             return NextResponse.json(
@@ -49,9 +49,9 @@ export async function GET(
             .orderBy(games.createdAt)
             .limit(1);
 
-        if (!firstGame || firstGame.uuid === currentGameUuid) {
+        if (!firstGame) {
             return NextResponse.json(
-                { code: 404, message: "No other games found in the database" },
+                { code: 404, message: "No games found in the database" },
                 { status: 404 },
             );
         }
