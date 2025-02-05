@@ -72,7 +72,7 @@ export default function GameCard({ game }: GameCardProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <Link href={`game/edit/${game.uuid}`}>
+              <Link href={`/edit/${game.uuid}`}>
                 <DropdownMenuItem>
                   <Pencil /> Edit
                 </DropdownMenuItem>
