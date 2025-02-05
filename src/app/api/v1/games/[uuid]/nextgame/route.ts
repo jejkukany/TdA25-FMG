@@ -8,7 +8,7 @@ export async function GET(
     { params }: { params: { uuid: string } },
 ) {
     try {
-        const { uuid: currentGameUuid } = params;
+        const currentGameUuid = params.uuid;
 
         if (!currentGameUuid) {
             return NextResponse.json(
