@@ -5,10 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ uuid: string }> },
+    { params }: { params: { uuid: string } },
 ) {
     try {
-        const currentGameUuid = (await params).uuid;
+        const { uuid: currentGameUuid } = params;
 
         if (!currentGameUuid) {
             return NextResponse.json(
