@@ -49,9 +49,9 @@ export async function GET(
             .orderBy(games.createdAt)
             .limit(1);
 
-        if (!firstGame) {
+        if (!firstGame || firstGame.uuid === currentGameUuid) {
             return NextResponse.json(
-                { code: 404, message: "No games found in the database" },
+                { code: 404, message: "No other games found in the database" },
                 { status: 404 },
             );
         }
