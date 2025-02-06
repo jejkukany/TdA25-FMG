@@ -30,12 +30,6 @@ const Games = () => {
     })
   }, [games, searchTerm, difficultyFilter, gameStateFilter])
 
-  const handleCreateGame = () => {
-    // Add your game creation logic here
-    console.log("Creating a new game!")
-    // For example, you might want to open a modal or navigate to a new page
-  }
-
   if (isPending) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -100,7 +94,7 @@ const Games = () => {
               </Select>
             </div>
             <Link href={"/game/create"}>
-              <Button onClick={handleCreateGame} className="whitespace-nowrap">
+              <Button className="whitespace-nowrap">
                 <PlusCircle className="mr-2 h-4 w-4" /> Create Game
               </Button>
             </Link>

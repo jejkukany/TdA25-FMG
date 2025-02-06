@@ -44,7 +44,6 @@ const Board: React.FC<BoardProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
   const queryClient = useQueryClient();
-  console.log(errorMessage);
 
   const checkWinner = (board: string[][]): "X" | "O" | null => {
     const size = board.length;
