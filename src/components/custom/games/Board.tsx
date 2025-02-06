@@ -32,7 +32,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: nextGame, isError } = useNextGame(nextGameParams.uuid);
+  const { data: nextGame } = useNextGame(nextGameParams.uuid);
 
   useEffect(() => {
     if (nextGame) {
@@ -267,7 +267,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
           onRematch={handleRematch}
           onClose={handleCloseModal}
           winner={winner}
-          disableNextGame={isError}
         />
       )}
     </div>
