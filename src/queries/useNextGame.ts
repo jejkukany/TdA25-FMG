@@ -16,6 +16,4 @@ export const useNextGame = (uuid: string) => useQuery<GameType, Error>({
     queryKey: ['nextGame', uuid],
     queryFn: () => fetchNextGame(uuid),
     enabled: !!uuid,
-    staleTime: 60 * 1000, //Cache na 1 minutu,
-    retry: 2,
 })
