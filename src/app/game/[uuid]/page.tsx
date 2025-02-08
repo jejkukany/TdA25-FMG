@@ -14,7 +14,7 @@ export default function SpecificGame() {
 
   return (
     <div className="flex-1">
-      {game && game.board && <Board initialBoard={game.board} startingPlayer={game.currentPlayer} />}
+      {game && game.board && <Board initialBoard={game.board} startingPlayer={game.currentPlayer} nextGame={game.nextGameUuid}/>}
     </div>
   );
 }

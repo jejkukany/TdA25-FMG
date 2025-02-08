@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { games } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, gt } from "drizzle-orm";
 import { determineGameState, validateBoard } from "@/lib/utils";
 
 
@@ -10,26 +10,52 @@ export async function GET(
   { params }: { params: Promise<{ uuid: string }> },
 ) {
   try {
-    const uuid = (await params).uuid; // The uuid here is the uuid
+    const currentGameUuid = (await params).uuid;
 
-    if (!uuid) {
+    if (!currentGameUuid) {
       return NextResponse.json(
         { code: 400, message: "UUID parameter is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    const game = await db.select().from(games).where(eq(games.uuid, uuid));
+    // Fetch current game
+    const [currentGame] = await db
+      .select()
+      .from(games)
+      .where(eq(games.uuid, currentGameUuid));
 
-    if (!game.length) {
+    if (!currentGame) {
       return NextResponse.json(
-        { code: 404, message: "Resource not found" },
-        { status: 404 },
+        { code: 404, message: "Game not found" },
+        { status: 404 }
       );
     }
 
-    const gameData = game[0];
-    const board = gameData.board;
+    // Fetch next game based on createdAt timestamp
+    const [nextGame] = await db
+      .select()
+      .from(games)
+      .where(gt(games.createdAt, currentGame.createdAt))
+      .orderBy(games.createdAt)
+      .limit(1);
+
+    let nextGameUuid = nextGame?.uuid || null;
+
+    // If no next game is found, get the first game in the database (wrap around)
+    if (!nextGameUuid) {
+      const [firstGame] = await db
+        .select()
+        .from(games)
+        .orderBy(games.createdAt)
+        .limit(1);
+
+      if (firstGame && firstGame.uuid !== currentGameUuid) {
+        nextGameUuid = firstGame.uuid;
+      }
+    }
+
+    const board = currentGame.board;
     // Dynamically calculate currentPlayer
     const flatBoard = board.flat();
     const xCount = flatBoard.filter((cell) => cell === "X").length;
@@ -37,7 +63,6 @@ export async function GET(
     const currentPlayer: "X" | "O" = xCount > oCount ? "O" : "X"; // "X" always starts
 
     const validationError = validateBoard(board, currentPlayer);
-
     if (validationError) {
       return NextResponse.json(
         { code: 400, message: validationError },
@@ -45,23 +70,23 @@ export async function GET(
       );
     }
 
-    const totalMoves = board.flat().filter((cell) => cell === "X" || cell === "O").length;
+    const totalMoves = flatBoard.filter((cell) => cell === "X" || cell === "O").length;
     const gameState = determineGameState(board, totalMoves, currentPlayer);
 
-    // Return the game data with the derived currentPlayer
     return NextResponse.json(
       {
-        ...gameData,
+        ...currentGame,
         currentPlayer,
         gameState,
+        nextGameUuid, // ✅ Includes the next game UUID
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error("GET Error:", error);
     return NextResponse.json(
       { code: 500, message: "Internal Server Error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
