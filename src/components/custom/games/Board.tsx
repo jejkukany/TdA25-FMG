@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,16 +11,15 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeft } from "lucide-react";
 import { VictoryModal } from "./VictoryModal";
-import { useNextGame } from "@/queries/useNextGame";
-import { useParams, useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 interface BoardProps {
   initialBoard: string[][];
   startingPlayer: "X" | "O";
+  nextGame: string | null;
 }
 
-const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
+const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer, nextGame }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(startingPlayer);
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
@@ -28,20 +27,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const nextGameParams = useParams<{ uuid: string }>();
   const router = useRouter();
-  const queryClient = useQueryClient();
-
-  const { data: nextGame } = useNextGame(nextGameParams.uuid);
-
-  useEffect(() => {
-    if (nextGame) {
-      queryClient.prefetchQuery({
-        queryKey: ["game", nextGame.uuid],
-        queryFn: () => fetch(`/api/v1/games/${nextGame.uuid}`).then(res => res.json()),
-      });
-    }
-  }, [nextGame, queryClient]);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -128,7 +114,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
 
   const handleNextGame = () => {
     if (nextGame) {
-      router.push(`/game/${nextGame.uuid}`);
+      router.push(`/game/${nextGame}`);
     }
     setIsModalOpen(false);
   };
@@ -267,6 +253,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer }) => {
           onRematch={handleRematch}
           onClose={handleCloseModal}
           winner={winner}
+          disableNextGame={nextGame == null}
         />
       )}
     </div>

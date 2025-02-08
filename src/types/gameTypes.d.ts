@@ -24,4 +24,5 @@ export type Game = {
   gameState: GameState;
   board: BoardState;
   currentPlayer: "X" | "O";
+  nextGameUuid: string | null;
 };
