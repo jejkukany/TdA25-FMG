@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 interface BoardProps {
   initialBoard: string[][];
   startingPlayer: "X" | "O";
-  nextGame: string | null;
+  nextGame?: string | null;
 }
 
 const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer, nextGame }) => {
@@ -28,6 +28,8 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer, nextGame })
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+
+  console.log(nextGame);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
