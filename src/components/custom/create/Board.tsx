@@ -1,13 +1,7 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   Card,
   CardContent,
@@ -16,34 +10,22 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Eraser, Save } from "lucide-react";
-import { SaveGameDialog } from "../game/Board/SaveGameDialog";
-import { updateGame } from "@/queries/useUpdateGame";
-//import { validateBoard } from "@/lib/utils";
+import { addGame } from "@/queries/useCreateGame";
+import { SaveGameDialog } from "@/components/custom/game/Board/SaveGameDialog";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
+import { validateBoard } from "@/lib/utils";
 
 interface BoardProps {
   initialBoard: string[][];
-  uuid: string;
-  name: string;
-  difficulty: string;
-  startingPlayer: "X" | "O";
 }
 
-const Board: React.FC<BoardProps> = ({
-  initialBoard,
-  uuid,
-  name,
-  difficulty,
-  startingPlayer,
-}) => {
+const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
-  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(startingPlayer);
+  const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
   const [winner, setWinner] = useState<"X" | "O" | null>(null);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const checkWinner = (board: string[][]): "X" | "O" | null => {
     const size = board.length;
@@ -125,6 +107,10 @@ const Board: React.FC<BoardProps> = ({
     });
   };
 
+  const isBoardEmpty = (board: string[][]): boolean => {
+    return board.flat().every((cell) => cell === "");
+  };
+
   const clearBoard = () => {
     const newBoard = board.map((row) => [...row]);
     newBoard.forEach((row) => row.fill(""));
@@ -134,17 +120,12 @@ const Board: React.FC<BoardProps> = ({
     setErrorMessage("Cannot save an empty board");
   };
 
-  const isBoardEmpty = (board: string[][]): boolean => {
-    return board.flat().every((cell) => cell === "");
-  };
-
   const saveGame = (name: string, difficulty: string) => {
-    // Validate board before saving
-    /*const validationError = validateBoard(board, currentPlayer);
+    const validationError = validateBoard(board, currentPlayer);
     if (validationError) {
       setErrorMessage(validationError);
       return;
-    }*/
+    }
 
     if (winner) {
       setErrorMessage("Cannot save because there is already a winner.");
@@ -157,22 +138,20 @@ const Board: React.FC<BoardProps> = ({
       setErrorMessage(null);
     }
 
-    router.push("/games");
-
-    updateGame({
-      uuid,
-      board,
-      difficulty,
-      name,
-    }).then(() => {
-      queryClient.invalidateQueries({ queryKey: ["game", uuid] });
+    addGame({
+      board: board,
+      difficulty: difficulty,
+      name: name,
+    }).then((savedGame) => {
+      router.push(`/game/${savedGame.uuid}`);
     });
   };
 
-  const isDisabled = !!winner || isBoardEmpty(board)
+  const isDisabled = !!winner || isBoardEmpty(board) || !!errorMessage;
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-8 lg:gap-6 min-h-screen">
+      {/* Board */}
       <div className="flex flex-wrap rounded-lg border border-gray-400 w-full max-w-[80vh] aspect-square">
         {board.map((row, rowIndex) =>
           row.map((cell, cellIndex) => (
@@ -205,11 +184,11 @@ const Board: React.FC<BoardProps> = ({
         )}
       </div>
 
+      {/* Right Pane */}
       <div className="w-full lg:w-1/4 xl:w-1/5 flex flex-col lg:h-[80vh] lg:max-h-[80vh] lg:gap-2 mt-4 lg:mt-0">
         <Card className="mb-2">
           <CardHeader>
             <div className="text-xl sm:text-2xl font-bold text-center">
-
               <div className="flex items-center justify-center space-x-2">
                 <span className="text-sm sm:text-md">Current Player:</span>
                 <div className="w-6 h-6 flex justify-center items-center">
@@ -260,24 +239,15 @@ const Board: React.FC<BoardProps> = ({
               <Eraser className="h-4 w-4 mr-2" />
               Clear Board
             </Button>
-            <TooltipProvider>
-              <Tooltip open={!!errorMessage}>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="w-full"
-                    onClick={() => setIsSaveDialogOpen(true)}
-                    variant="outline"
-                    disabled={isDisabled}
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Game
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{errorMessage}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Button
+              className="w-full"
+              onClick={() => setIsSaveDialogOpen(true)}
+              variant="outline"
+              disabled={isDisabled}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Game
+            </Button>
           </CardFooter>
         </Card>
       </div>
@@ -285,8 +255,6 @@ const Board: React.FC<BoardProps> = ({
         isOpen={isSaveDialogOpen}
         onClose={() => setIsSaveDialogOpen(false)}
         onSave={saveGame}
-        defaultDifficulty={difficulty}
-        defaultName={name}
       />
     </div>
   );

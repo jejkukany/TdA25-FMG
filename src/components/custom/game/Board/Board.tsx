@@ -72,10 +72,6 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     return false;
   };
 
-  const isBoardEmpty = (board: string[][]): boolean => {
-    return board.every(row => row.every(cell => cell === ""));
-  };
-
   const handleCellClick = (rowIndex: number, cellIndex: number) => {
     if (board[rowIndex][cellIndex] !== "" || winner) {
       return;
@@ -101,6 +97,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     }
   };
 
+  const isBoardEmpty = (board: string[][]): boolean => {
+    return board.flat().every((cell) => cell === "");
+  };
+
   const returnPlay = (index: number) => {
     if (index < 0 || index >= moves.length) return;
 
@@ -122,6 +122,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       alert("Cannot save because there is already a winner.");
       return;
     }
+
     addGame({
       board: board,
       difficulty: difficulty,
@@ -258,7 +259,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
               className="w-full"
               onClick={() => setIsSaveDialogOpen(true)}
               variant="outline"
-              disabled={isBoardEmpty(board) || !!winner}
+              disabled={!!winner || isBoardEmpty(board)}
             >
               <Save className="h-4 w-4 mr-2" />
               Save Game
@@ -278,7 +279,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       <SaveGameDialog
         isOpen={isSaveDialogOpen}
         onClose={() => setIsSaveDialogOpen(false)}
-        onSave={saveGame}     
+        onSave={saveGame}
       />
     </div>
   );

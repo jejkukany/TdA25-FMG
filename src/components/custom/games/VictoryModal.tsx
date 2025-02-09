@@ -13,6 +13,7 @@ interface VictoryModalProps {
   onRematch: () => void;
   onClose: () => void;
   winner: "X" | "O" | null;
+  disableNextGame: boolean;
 }
 
 export function VictoryModal({
@@ -21,6 +22,7 @@ export function VictoryModal({
   winner,
   onRematch,
   onClose,
+  disableNextGame,
 }: VictoryModalProps) {
   const getWinnerImage = () => {
     if (winner === "X") {
@@ -71,6 +73,7 @@ export function VictoryModal({
             <Button
               onClick={onNextGame}
               className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+              disabled={disableNextGame}
             >
               Next Game
             </Button>
