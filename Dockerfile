@@ -10,18 +10,15 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy package.json and lockfile, then install dependencies
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install
-
-# Verify installation
-RUN pnpm list
+COPY package.json ./
+RUN npm install
 
 # Build stage
 FROM base AS builder
 WORKDIR /app
 COPY . .
 
-RUN pnpm build
+RUN npm run build
 
 # Production stage
 FROM node:18-bullseye AS runner
