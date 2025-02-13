@@ -23,7 +23,7 @@ export default function ContactPage() {
 
       <div className="max-w-4xl mx-auto mb-12">
         <p className="text-lg mb-4 text-center">
-          We're here to help and answer any question you might have. We look forward to hearing from you.
+          We are here to help and answer any question you might have. We look forward to hearing from you.
         </p>
       </div>
 
@@ -31,7 +31,7 @@ export default function ContactPage() {
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
           <CardHeader>
             <CardTitle className="text-2xl">Get in Touch</CardTitle>
-            <CardDescription>We're just a message away</CardDescription>
+            <CardDescription>We are just a message away</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
