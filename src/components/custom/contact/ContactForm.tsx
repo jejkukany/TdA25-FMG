@@ -42,7 +42,7 @@ export function ContactForm() {
     <Card>
       <CardHeader>
         <CardTitle>Send us a Message</CardTitle>
-        <CardDescription>Fill out the form below and we'll get back to you as soon as possible</CardDescription>
+        <CardDescription>Fill out the form below and we will get back to you as soon as possible</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
