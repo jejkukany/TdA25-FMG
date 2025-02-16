@@ -1,23 +1,28 @@
 import { betterAuth } from "better-auth";
-import Database from "better-sqlite3";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import * as schema from "../db/schema"; // Import your schema
+import { db } from "../db/index";
 import type { BetterAuthPlugin } from "better-auth/plugins";
 
-// Initialize SQLite database with better-sqlite3
-const sqlite = new Database("./sqlite.db");
-const db = drizzle(sqlite, { schema });
-
-// Admin Plugin
-export const adminPlugin = () => {
+export const userStatsPlugin = () => {
   return {
-    id: "admin-plugin",
+    id: "user-stats-plugin",
     schema: {
       user: {
         fields: {
-          isAdmin: {
-            type: "boolean",
+          uuid: {
+            type: "string",
+          },
+          elo: {
+            type: "number",
+          },
+          wins: {
+            type: "number",
+          },
+          draws: {
+            type: "number",
+          },
+          losses: {
+            type: "number",
           },
         },
       },
@@ -25,12 +30,11 @@ export const adminPlugin = () => {
   } satisfies BetterAuthPlugin;
 };
 
-// Authentication setup
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: "sqlite",
+    provider: "sqlite", // or "mysql", "sqlite"
   }),
-  plugins: [adminPlugin()],
+  plugins: [userStatsPlugin()],
   emailAndPassword: {
     enabled: true,
   },

@@ -1,20 +1,33 @@
 import type { BetterAuthPlugin } from "better-auth/plugins";
 import { createAuthClient } from "better-auth/react"; // make sure to import from better-auth/react
 
-const adminPlugin = () => {
+const userStatsPlugin = () => {
   return {
-    id: "admin-plugin",
+    id: "user-stats-plugin",
     schema: {
       user: {
         fields: {
-          isAdmin: {
-            type: "boolean",
+          uuid: {
+            type: "string",
+          },
+          elo: {
+            type: "number",
+          },
+          wins: {
+            type: "number",
+          },
+          draws: {
+            type: "number",
+          },
+          losses: {
+            type: "number",
           },
         },
       },
     },
   } satisfies BetterAuthPlugin;
 };
+
 export const client = createAuthClient({
-  plugins: [adminPlugin()],
+  plugins: [userStatsPlugin()],
 });

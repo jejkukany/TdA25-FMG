@@ -24,6 +24,11 @@ export const user = sqliteTable("user", {
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   isAdmin: integer("is_admin", { mode: "boolean" }),
+  uuid: text("uuid"),
+  elo: integer("elo").default(400),
+  wins: integer("wins").default(0),
+  draws: integer("draws").default(0),
+  losses: integer("losses").default(0),
 });
 
 export const session = sqliteTable("session", {
