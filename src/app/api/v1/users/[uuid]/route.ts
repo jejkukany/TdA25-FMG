@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
-import { client } from "@/server/auth/client";
 import { auth } from "@/server/auth/auth";
 
 // Helper function for error responses
