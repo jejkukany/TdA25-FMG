@@ -18,7 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Eraser, Save } from "lucide-react";
 import { SaveGameDialog } from "../game/Board/SaveGameDialog";
 import { updateGame } from "@/queries/useUpdateGame";
-//import { validateBoard } from "@/lib/utils";
+import { validateBoard } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -138,13 +138,17 @@ const Board: React.FC<BoardProps> = ({
     return board.flat().every((cell) => cell === "");
   };
 
+  const isBoardFull = (board: string[][]): boolean => {
+    return board.flat().every((cell) => cell === "X" || cell === "O");
+  };
+
   const saveGame = (name: string, difficulty: string) => {
     // Validate board before saving
-    /*const validationError = validateBoard(board, currentPlayer);
+    const validationError = validateBoard(board, currentPlayer);
     if (validationError) {
       setErrorMessage(validationError);
       return;
-    }*/
+    }
 
     if (winner) {
       setErrorMessage("Cannot save because there is already a winner.");
@@ -152,6 +156,9 @@ const Board: React.FC<BoardProps> = ({
       return;
     } else if (isBoardEmpty(board)) {
       setErrorMessage("Cannot save an empty board.");
+      return;
+    } else if (isBoardFull(board)) {
+      setErrorMessage("Cannot save because the board is full.");
       return;
     } else {
       setErrorMessage(null);

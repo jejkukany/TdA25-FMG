@@ -22,7 +22,7 @@ interface BoardProps {
 const Board: React.FC<BoardProps> = ({ initialBoard }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">("X");
-  const [winner, setWinner] = useState<"X" | "O" | null>(null);
+  const [winner, setWinner] = useState<"X" | "O" | "draw" | null>(null);
   const [moves, setMoves] = useState<
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
@@ -72,30 +72,41 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     return false;
   };
 
+    // ...existing code...
+  
+  const isBoardFull = (board: string[][]): boolean => {
+    return board.every(row => row.every(cell => cell !== ""));
+  };
+  
   const handleCellClick = (rowIndex: number, cellIndex: number) => {
     if (board[rowIndex][cellIndex] !== "" || winner) {
       return;
     }
-
+  
     const newBoard = board.map((row, rIndex) =>
       row.map((cell, cIndex) =>
         rIndex === rowIndex && cIndex === cellIndex ? currentPlayer : cell,
       ),
     );
-
+  
     setBoard(newBoard);
     setMoves((prevMoves) => [
       ...prevMoves,
       { player: currentPlayer, position: [rowIndex, cellIndex] },
     ]);
-
+  
     if (checkWinner(newBoard, currentPlayer)) {
       setWinner(currentPlayer);
+      setIsModalOpen(true);
+    } else if (isBoardFull(newBoard)) {
+      setWinner("draw");
       setIsModalOpen(true);
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
     }
   };
+  
+  // ...existing code...
 
   const isBoardEmpty = (board: string[][]): boolean => {
     return board.flat().every((cell) => cell === "");
@@ -273,7 +284,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
           isOpen={isModalOpen}
           onRematch={handleRematch}
           onClose={handleCloseModal}
-          winner={winner}
+          result={winner}
         />
       )}
       <SaveGameDialog

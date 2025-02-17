@@ -22,14 +22,12 @@ interface BoardProps {
 const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer, nextGame }) => {
   const [board, setBoard] = useState<string[][]>(initialBoard);
   const [currentPlayer, setCurrentPlayer] = useState<"X" | "O">(startingPlayer);
-  const [winner, setWinner] = useState<"X" | "O" | null>(null);
+  const [winner, setWinner] = useState<"X" | "O" | "draw" | null>(null);
   const [moves, setMoves] = useState<
     { player: "X" | "O"; position: [number, number] }[]
   >([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
-
-  console.log(nextGame);
 
   const checkWinner = (board: string[][], symbol: string): boolean => {
     const size = board.length;
@@ -73,25 +71,32 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer, nextGame })
     return false;
   };
 
+  const isBoardFull = (board: string[][]): boolean => {
+    return board.every(row => row.every(cell => cell !== ""));
+  };
+  
   const handleCellClick = (rowIndex: number, cellIndex: number) => {
     if (board[rowIndex][cellIndex] !== "" || winner) {
       return;
     }
-
+  
     const newBoard = board.map((row, rIndex) =>
       row.map((cell, cIndex) =>
         rIndex === rowIndex && cIndex === cellIndex ? currentPlayer : cell,
       ),
     );
-
+  
     setBoard(newBoard);
     setMoves((prevMoves) => [
       ...prevMoves,
       { player: currentPlayer, position: [rowIndex, cellIndex] },
     ]);
-
+  
     if (checkWinner(newBoard, currentPlayer)) {
       setWinner(currentPlayer);
+      setIsModalOpen(true);
+    } else if (isBoardFull(newBoard)) {
+      setWinner("draw");
       setIsModalOpen(true);
     } else {
       setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
@@ -254,7 +259,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, startingPlayer, nextGame })
           onNextGame={handleNextGame}
           onRematch={handleRematch}
           onClose={handleCloseModal}
-          winner={winner}
+          result={winner}
           disableNextGame={nextGame == null}
         />
       )}

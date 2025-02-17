@@ -111,6 +111,10 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
     return board.flat().every((cell) => cell === "");
   };
 
+  const isBoardFull = (board: string[][]): boolean => {
+    return board.flat().every((cell) => cell === "X" || cell === "O");
+  };
+
   const clearBoard = () => {
     const newBoard = board.map((row) => [...row]);
     newBoard.forEach((row) => row.fill(""));
@@ -133,6 +137,9 @@ const Board: React.FC<BoardProps> = ({ initialBoard }) => {
       return;
     } else if (isBoardEmpty(board)) {
       setErrorMessage("Cannot save an empty board.");
+      return;
+    } else if (isBoardFull(board)) {
+      setErrorMessage("Cannot save because the board is full.");
       return;
     } else {
       setErrorMessage(null);
