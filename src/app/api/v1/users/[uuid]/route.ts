@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { user } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { client } from "@/server/auth/client";
+import { auth } from "@/server/auth/auth";
 
 // Helper function for error responses
 const errorResponse = (code: number, message: string) =>
@@ -55,6 +57,20 @@ export async function PUT(
     if ("username" in body) {
       updateData.name = body.username;
       delete updateData.username;
+    }
+    if ("password" in body) {
+      delete updateData.password;
+    }
+    // Update password if provided
+    if ("password" in body) {
+      const [currentUser] = await db
+        .select()
+        .from(user)
+        .where(eq(user.uuid, uuid));
+
+      const ctx = await auth.$context;
+      const hash = await ctx.password.hash(body.password);
+      await ctx.internalAdapter.updatePassword(currentUser.id, hash);
     }
 
     const [updatedUser] = await db

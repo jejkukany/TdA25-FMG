@@ -24,7 +24,7 @@ export const user = sqliteTable("user", {
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
   isAdmin: integer("is_admin", { mode: "boolean" }),
-  uuid: text("uuid"),
+  uuid: text("uuid").unique(),
   elo: integer("elo").default(400),
   wins: integer("wins").default(0),
   draws: integer("draws").default(0),
