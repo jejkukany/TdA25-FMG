@@ -25,8 +25,6 @@ FROM node:18-bullseye AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV BETTER_AUTH_SECRET=BbQpeDCVu5KA1zrCUuECuTGHf6ujmHhF
-ENV BETTER_AUTH_URL=https://13682ac4.app.deploy.tourde.app/
 
 # Add a non-root user
 RUN addgroup --system --gid 1001 nodejs
