@@ -1,7 +1,6 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -17,23 +16,16 @@ import {
 	Settings,
 	User,
 	ChevronsUpDown,
-	Sun,
 	Moon,
 	LogIn,
 } from "lucide-react";
 import Link from "next/link";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import router from "next/router";
 import { client } from "@/server/auth/client";
 
 export function UserMenu() {
 	const { theme, setTheme } = useTheme();
-	const {
-		data: data,
-		isPending, //loading state
-		error, //error object
-		refetch, //refetch the session
-	} = client.useSession();
+	const { data: data } = client.useSession();
 
 	const user = data?.user;
 
@@ -108,13 +100,17 @@ export function UserMenu() {
 								</div>
 							</div>
 							<div>
-								<div className="font-semibold">{user.draws}</div>
+								<div className="font-semibold">
+									{user.draws}
+								</div>
 								<div className="text-xs text-muted-foreground">
 									Draws
 								</div>
 							</div>
 							<div>
-								<div className="font-semibold">{user.losses}</div>
+								<div className="font-semibold">
+									{user.losses}
+								</div>
 								<div className="text-xs text-muted-foreground">
 									Losses
 								</div>

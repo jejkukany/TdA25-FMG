@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Trophy, Target, MinusCircle, Minus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";

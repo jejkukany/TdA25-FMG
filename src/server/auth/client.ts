@@ -1,5 +1,4 @@
 import { BetterAuthClientPlugin } from "better-auth";
-import type { BetterAuthPlugin } from "better-auth/plugins";
 import { createAuthClient } from "better-auth/react"; // make sure to import from better-auth/react
 import { userStatsPlugin } from "./auth";
 
