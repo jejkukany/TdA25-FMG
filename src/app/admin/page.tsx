@@ -35,8 +35,6 @@ export default function AdminDashboard() {
 	const [users, setUsers] = useState<User[]>([]);
 	const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [loading, setLoading] = useState(true);
-
 	useEffect(() => {
 		if (isPending) return; // Wait for session to load
 
@@ -65,8 +63,6 @@ export default function AdminDashboard() {
 			setUsers(data);
 		} catch (error) {
 			console.error("Failed to fetch users:", error);
-		} finally {
-			setLoading(false);
 		}
 	};
 
