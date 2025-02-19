@@ -37,6 +37,7 @@ COPY --chmod=765 sqlite.db /app
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/.env.production ./
 
 # Ensure sqlite.db is writable by anyone
 RUN chmod a+rw /app/sqlite.db
