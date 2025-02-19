@@ -1,33 +1,14 @@
+import { BetterAuthClientPlugin } from "better-auth";
 import type { BetterAuthPlugin } from "better-auth/plugins";
 import { createAuthClient } from "better-auth/react"; // make sure to import from better-auth/react
+import { userStatsPlugin } from "./auth";
 
-const userStatsPlugin = () => {
-  return {
-    id: "user-stats-plugin",
-    schema: {
-      user: {
-        fields: {
-          uuid: {
-            type: "string",
-          },
-          elo: {
-            type: "number",
-          },
-          wins: {
-            type: "number",
-          },
-          draws: {
-            type: "number",
-          },
-          losses: {
-            type: "number",
-          },
-        },
-      },
-    },
-  } satisfies BetterAuthPlugin;
+export const userStatsClientPlugin = () => {
+	return {
+		id: "userStatsPlugin",
+		$InferServerPlugin: {} as ReturnType<typeof userStatsPlugin>,
+	} satisfies BetterAuthClientPlugin;
 };
-
 export const client = createAuthClient({
-  plugins: [userStatsPlugin()],
+	plugins: [userStatsClientPlugin()],
 });

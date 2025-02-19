@@ -4,38 +4,46 @@ import { db } from "../db/index";
 import type { BetterAuthPlugin } from "better-auth/plugins";
 
 export const userStatsPlugin = () => {
-  return {
-    id: "user-stats-plugin",
-    schema: {
-      user: {
-        fields: {
-          uuid: {
-            type: "string",
-          },
-          elo: {
-            type: "number",
-          },
-          wins: {
-            type: "number",
-          },
-          draws: {
-            type: "number",
-          },
-          losses: {
-            type: "number",
-          },
-        },
-      },
-    },
-  } satisfies BetterAuthPlugin;
+	return {
+		id: "user-stats-plugin",
+		schema: {
+			user: {
+				fields: {
+					uuid: {
+						type: "string",
+						required: false,
+					},
+					elo: {
+						type: "number",
+					},
+					isAdmin: {
+						type: "boolean",
+						defaultValue: false,
+					},
+					wins: {
+						type: "number",
+						required: false,
+					},
+					draws: {
+						type: "number",
+						required: false,
+					},
+					losses: {
+						type: "number",
+						required: false,
+					},
+				},
+			},
+		},
+	} satisfies BetterAuthPlugin;
 };
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "sqlite", // or "mysql", "sqlite"
-  }),
-  plugins: [userStatsPlugin()],
-  emailAndPassword: {
-    enabled: true,
-  },
+	database: drizzleAdapter(db, {
+		provider: "sqlite", // or "mysql", "sqlite"
+	}),
+	plugins: [userStatsPlugin()],
+	emailAndPassword: {
+		enabled: true,
+	},
 });

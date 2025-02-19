@@ -28,67 +28,42 @@ export default function SignUp() {
 	const router = useRouter();
 
 	useEffect(() => {
+		// Store the current URL (excluding the sign-in page) in localStorage
 		const currentPath = window.location.pathname;
 		if (currentPath !== "/sign-up") {
 			localStorage.setItem("previousUrl", currentPath);
 		}
 	}, []);
-
 	const signUp = async () => {
 		setLoading(true);
 		setError(null);
-	
+
 		if (!name || !email || !password) {
 			setError("Please fill in all fields");
 			setLoading(false);
 			return;
 		}
-	
-		try {
-			const response = await fetch("/api/v1/users", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
+
+		await client.signUp.email(
+			{
+				email,
+				password,
+				name,
+				image: image ? URL.createObjectURL(image) : undefined,
+				elo: 400,
+			},
+			{
+				onSuccess: () => {
+					const previousUrl =
+						localStorage.getItem("previousUrl") ?? "/admin";
+					router.push(previousUrl);
 				},
-				body: JSON.stringify({
-					username: name,
-					email,
-					password,
-					elo: 400,
-				}),
-			});
-	
-			if (!response.ok) {
-				const data = await response.json();
-				throw new Error(data.message || "Failed to sign up");
+				onError: (ctx) => {
+					setError(ctx.error.message);
+				},
 			}
-	
-			// Sign in the user after successful registration
-			await client.signIn.email(
-				{
-					email,
-					password,
-				},
-				{
-					onSuccess: () => {
-						const previousUrl = localStorage.getItem("previousUrl") ?? "/admin";
-						router.push(previousUrl);
-					},
-					onError: (ctx) => {
-						setError("Registration successful, but failed to sign in: " + ctx.error.message);
-					},
-				}
-			);
-	
-		} catch (err) {
-			setError(
-				err instanceof Error
-					? err.message
-					: "An error occurred during sign up"
-			);
-		} finally {
-			setLoading(false);
-		}
+		);
+		setLoading(false);
 	};
 
 	return (
