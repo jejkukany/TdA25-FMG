@@ -8,27 +8,47 @@ import { useGames } from "@/queries/useGames"
 import type { DifficultyType, GameState } from "@/types/gameTypes"
 import Image from "next/image"
 import Loading from "../loading"
-import { PlusCircle } from "lucide-react"
+import { PlusCircle, X } from "lucide-react"
 import Link from "next/link"
 
 const difficultyOptions: DifficultyType[] = ["beginner", "easy", "medium", "hard", "extreme"]
 const gameStateOptions: GameState[] = ["opening", "midgame", "endgame", "unknown"]
+const sortOptions = [
+  { value: "newest", label: "Newest First" },
+  { value: "oldest", label: "Oldest First" },
+]
 
 const Games = () => {
   const { data: games, isPending, isError, error } = useGames()
   const [searchTerm, setSearchTerm] = useState("")
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyType | "all">("all")
   const [gameStateFilter, setGameStateFilter] = useState<GameState | "all">("all")
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest")
 
-  const filteredGames = useMemo(() => {
+  const filteredAndSortedGames = useMemo(() => {
     if (!games) return []
-    return games.filter((game) => {
+
+    const filtered = games.filter((game) => {
       const nameMatch = game.name.toLowerCase().includes(searchTerm.toLowerCase())
       const difficultyMatch = difficultyFilter === "all" || game.difficulty === difficultyFilter
       const gameStateMatch = gameStateFilter === "all" || game.gameState === gameStateFilter
       return nameMatch && difficultyMatch && gameStateMatch
     })
-  }, [games, searchTerm, difficultyFilter, gameStateFilter])
+
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.updatedAt).getTime()
+      const dateB = new Date(b.updatedAt).getTime()
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB
+    })
+  }, [games, searchTerm, difficultyFilter, gameStateFilter, sortOrder])
+
+  const clearFilters = () => {
+    setSearchTerm("")
+    setDifficultyFilter("all")
+    setGameStateFilter("all")
+    setSortOrder("newest")
+  }
+
 
   if (isPending) {
     return (
@@ -92,6 +112,21 @@ const Games = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as "newest" | "oldest")}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Sort Order" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+                <Button variant="outline" onClick={clearFilters} className="whitespace-nowrap bg-destructive text-white hover:text-white hover:bg-red-700">
+                  <X className="mr-2 h-4 w-4" /> Clear Filters
+                </Button>
             </div>
             <Link href={"/game/create"}>
               <Button className="whitespace-nowrap">
@@ -101,13 +136,14 @@ const Games = () => {
           </div>
         </div>
       </div>
-      {filteredGames.length === 0 ? (
+      {filteredAndSortedGames.length === 0 ? (
         <p className="text-center text-gray-500">No games found.</p>
       ) : (
-        <GameList games={filteredGames} />
+        <GameList games={filteredAndSortedGames} />
       )}
     </div>
   )
 }
 
 export default Games
+
