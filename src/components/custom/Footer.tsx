@@ -18,6 +18,12 @@ export function Footer() {
               GDPR
             </Link>
             <Link 
+              href="/tos" 
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              ToS
+            </Link>
+            <Link 
               href="/contact" 
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
