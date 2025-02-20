@@ -31,7 +31,7 @@ export default function TermsOfService() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-4 text-primary">3. Disclaimer</h2>
         <p className="mb-4 leading-relaxed">
-          The materials on our website are provided on an 'as is' basis. We make no warranties, expressed or implied,
+          The materials on our website are provided on an <strong>as is</strong> basis. We make no warranties, expressed or implied,
           and hereby disclaim and negate all other warranties including, without limitation, implied warranties or
           conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property
           or other violation of rights.
@@ -62,7 +62,7 @@ export default function TermsOfService() {
         <p className="mb-4 leading-relaxed">
           We have not reviewed all of the sites linked to our website and are not responsible for the contents of any
           such linked site. The inclusion of any link does not imply endorsement by us of the site. Use of any such
-          linked website is at the user's own risk.
+          linked website is at the users own risk.
         </p>
       </section>
 
