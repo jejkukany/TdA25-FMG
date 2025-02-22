@@ -46,4 +46,5 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 	},
+	trustedOrigins: ["https://13682ac4.app.deploy.tourde.app"],
 });
