@@ -1,4 +1,4 @@
-# Base image
+# Base stage
 FROM node:18-bullseye AS base
 
 # Install system dependencies for native modules
@@ -9,16 +9,23 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copy package.json and lockfile, then install dependencies
-COPY package.json ./
-RUN npm install
+# Copy package.json files and install dependencies
+COPY frontend/package.json ./frontend/
+COPY backend/package.json ./backend/
+
+RUN npm install --prefix frontend
+RUN npm install --prefix backend
 
 # Build stage
 FROM base AS builder
 WORKDIR /app
 COPY . .
 
-RUN npm run build
+# 🛠️ Rebuild better-sqlite3 to fix native module issue BEFORE building Next.js
+RUN npm rebuild better-sqlite3 --prefix frontend
+
+# Build frontend (Next.js)
+RUN npm run build --prefix frontend
 
 # Production stage
 FROM node:18-bullseye AS runner
@@ -33,17 +40,27 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files for production
-COPY --chmod=765 sqlite.db /app
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/frontend/public ./frontend/public
+COPY --from=builder /app/frontend/.next/standalone ./frontend/
+COPY --from=builder /app/frontend/.next/static ./frontend/.next/static
 COPY --from=builder /app/.env.production ./
 
-# Ensure sqlite.db is writable by anyone
-RUN chmod a+rw /app/sqlite.db
+# Copy backend files
+COPY --from=builder /app/backend /app/backend
 
+# Copy SQLite database into frontend
+COPY --chmod=777 --from=builder /app/frontend/sqlite.db /app/frontend/sqlite.db
+
+# Ensure sqlite.db is writable
+RUN chmod a+rw /app/frontend/sqlite.db
 RUN chmod a+rw /app
 
 USER nextjs
-EXPOSE 3000
-CMD ["node", "server.js"]
+
+# Expose necessary ports
+EXPOSE 3000  
+EXPOSE 4000  
+
+# Start both backend and frontend using PM2
+CMD node /app/frontend/server.js & node /app/backend/server.js
+
