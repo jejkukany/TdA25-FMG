@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { client } from "@/server/auth/client";// Replace with your actual auth library
+import Loading from "../loading";
 
-const socket = io("http://localhost:4000");
+const socket = io(process.env.NODE_ENV === 'production' 
+  ? process.env.BETTER_AUTH_URL 
+  : "http://localhost:4000"
+);
 
 export default function TicTacToeLobby() {
   const [player, setPlayer] = useState(null);
@@ -31,7 +35,7 @@ export default function TicTacToeLobby() {
   };
 
   if (isPending) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   return (

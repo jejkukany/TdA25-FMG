@@ -7,12 +7,20 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://13682ac4.app.deploy.tourde.app"
+    ],
     methods: ["GET", "POST"],
   },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://13682ac4.app.deploy.tourde.app"
+  ]
+}));
 app.get("/", (req, res) => {
   res.send("Tic-Tac-Toe Server is running.");
 });
