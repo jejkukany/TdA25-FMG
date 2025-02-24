@@ -2,10 +2,8 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 
-const hostname = "localhost";
-const port = 3000;
 // when using middleware `hostname` and `port` must be provided below
-const app = next({ hostname, port });
+const app = next();
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
