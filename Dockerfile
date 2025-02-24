@@ -60,5 +60,5 @@ USER nextjs
 EXPOSE 3000 
 
 # Start both backend and frontend using PM2
-CMD node /app/frontend/server.js 
+CMD node /app/frontend/server.js
 
