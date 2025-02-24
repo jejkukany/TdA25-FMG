@@ -5,11 +5,7 @@ import { io } from "socket.io-client";
 import { client } from "@/server/auth/client"; // Replace with your actual auth library
 import Loading from "../loading";
 
-const socket = io(
-	process.env.NODE_ENV === "production"
-		? process.env.BETTER_AUTH_URL + ":4000"
-		: "http://localhost:4000"
-);
+const socket = io("https://13682ac4.app.deploy.tourde.app:4000");
 
 export default function TicTacToeLobby() {
 	const [player, setPlayer] = useState(null);
