@@ -7,9 +7,15 @@ import Loading from "../loading";
 
 const socket = io(
   "https://13682ac4.app.deploy.tourde.app", 
-  {transports: ['websocket', 'polling'],
-  reconnection: true
-});
+  {
+    transports: ['polling', 'websocket'],
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    reconnection: true,
+    forceNew: true,
+    timeout: 10000
+  }
+);
 
 export default function TicTacToeLobby() {
 	const [player, setPlayer] = useState(null);
