@@ -10,13 +10,13 @@
 		"db:push": "drizzle-kit push",
 		"db:pull": "drizzle-kit pull",
 		"db:studio": "drizzle-kit studio",
-		"dev": "node server.js",
+		"dev": "node server.ts",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
 		"format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
 		"lint": "next lint",
 		"lint:fix": "next lint --fix",
 		"preview": "next build && next start",
-		"start": "NODE_ENV=production node server.js",
+		"start": "NODE_ENV=production node server.ts",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
