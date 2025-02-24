@@ -8,19 +8,21 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "http://localhost:3000",
       "https://13682ac4.app.deploy.tourde.app"
     ],
     methods: ["GET", "POST"],
+    secure: true,
+    transports: ['websocket', 'polling']
   },
 });
 
 app.use(cors({
   origin: [
-    "http://localhost:3000",
     "https://13682ac4.app.deploy.tourde.app"
-  ]
+  ],
+  credentials: true
 }));
+
 app.get("/", (req, res) => {
   res.send("Tic-Tac-Toe Server is running.");
 });
@@ -110,6 +112,6 @@ function generateWinPatterns() {
   return patterns;
 }
 
-server.listen(4000, () => {
-  console.log("Server running on http://localhost:4000");
+server.listen(4000, '0.0.0.0', () => {
+  console.log('Server running on port 4000');
 });
