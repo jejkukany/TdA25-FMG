@@ -11,13 +11,7 @@ const handler = app.getRequestHandler();
 app.prepare().then(() => {
   const httpServer = createServer(handler);
 
-  const io = new Server(httpServer, {
-    cors: {
-      origin: "https://13682ac4.app.deploy.tourde.app",
-      methods: ["GET", "POST"],
-      credentials: true
-    }
-  });
+  const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
