@@ -57,7 +57,11 @@ RUN chmod a+rw /app
 USER nextjs
 
 # Expose necessary ports
-EXPOSE 3000  
+EXPOSE 3000 
+
+ENV PORT=3000
+
+ENV HOSTNAME="0.0.0.0"
 # Start both backend and frontend using PM2
 CMD node /app/frontend/server.js 
 

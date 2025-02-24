@@ -1,74 +1,84 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import { client } from "@/server/auth/client"; // Replace with your actual auth library
-import Loading from "../loading";
+import { socket } from "@/app/socket"
 
-const socket = io(
-  "https://13682ac4.app.deploy.tourde.app", 
-  {
-    transports: ['polling', 'websocket'],
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
-    reconnection: true,
-    forceNew: true,
-    timeout: 10000
-  }
-);
+export default function Home() {
+  const [isConnected, setIsConnected] = useState(false);
+  const [transport, setTransport] = useState("N/A");
+  const [waiting, setWaiting] = useState(false);
+  const [player, setPlayer] = useState(null);
 
-export default function TicTacToeLobby() {
-	const [player, setPlayer] = useState(null);
-	const [roomJoined, setRoomJoined] = useState(false);
-	const [waiting, setWaiting] = useState(false);
-	const { data: session, isPending } = client.useSession();
-	console.log("This is a session:", session);
+  useEffect(() => {
+    if (socket.connected) {
+      onConnect();
+    }
 
-	useEffect(() => {
-		socket.on("assignPlayer", (symbol) => {
-			setPlayer(symbol);
-			setWaiting(false);
-		});
+    function onConnect() {
+      setIsConnected(true);
+      setTransport(socket.io.engine.transport.name);
 
-		socket.on("waitingForPlayer", () => {
-			setWaiting(true);
-		});
-	}, []);
+      socket.io.engine.on("upgrade", (transport) => {
+        setTransport(transport.name);
+      });
+    }
 
-	const joinRoom = () => {
-		socket.emit("joinRoom");
-		setRoomJoined(true);
-		setWaiting(true);
-	};
+    function onDisconnect() {
+      setIsConnected(false);
+      setTransport("N/A");
+    }
 
-	if (isPending) {
-		return <Loading />;
-	}
+    // Game-specific socket events
+    socket.on("waitingForPlayer", () => {
+      setWaiting(true);
+    });
 
-	return (
-		<div className="flex flex-col items-center">
-			<h1 className="text-2xl font-bold">Tic Tac Toe Lobby</h1>
-			{!roomJoined ? (
-				<button
-					onClick={joinRoom}
-					className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-				>
-					Join Game
-				</button>
-			) : waiting ? (
-				<p className="mt-4">Waiting for another player...</p>
-			) : (
-				<>
-					<p className="mt-4">You are playing as: {player}</p>
-					{session ? (
-						<p className="mt-4">
-							Logged in as: {session.user.name}
-						</p>
-					) : (
-						<p className="mt-4">You are playing as a guest</p>
-					)}
-				</>
-			)}
-		</div>
-	);
+    socket.on("assignPlayer", (symbol) => {
+      setPlayer(symbol);
+      setWaiting(false);
+    });
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("waitingForPlayer");
+      socket.off("assignPlayer");
+      socket.off("gameState");
+    };
+  }, []);
+
+  const handleJoinGame = () => {
+    socket.emit("joinRoom");
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-4">
+      <div className="text-sm">
+        <p>Status: {isConnected ? "connected" : "disconnected"}</p>
+        <p>Transport: {transport}</p>
+      </div>
+
+      {!player && !waiting && (
+        <button 
+          onClick={handleJoinGame}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Find Game
+        </button>
+      )}
+
+      {waiting && (
+        <p className="text-lg">Waiting for another player...</p>
+      )}
+
+      {player && (
+        <div className="text-center">
+          <p className="text-lg font-bold">You are playing as: {player}</p>
+        </div>
+      )}
+    </div>
+  );
 }
