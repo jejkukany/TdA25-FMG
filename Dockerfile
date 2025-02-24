@@ -43,7 +43,6 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/frontend/public ./frontend/public
 COPY --from=builder /app/frontend/.next/standalone ./frontend/
 COPY --from=builder /app/frontend/.next/static ./frontend/.next/static
-COPY --from=builder /app/.env.production ./
 
 # Copy backend files
 COPY --from=builder /app/backend /app/backend
