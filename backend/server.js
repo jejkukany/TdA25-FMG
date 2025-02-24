@@ -12,7 +12,8 @@ const io = new Server(server, {
     ],
     methods: ["GET", "POST"],
     secure: true,
-    transports: ['websocket', 'polling']
+    transports: ['websocket', 'polling'],
+    allowEIO3: true,
   },
 });
 

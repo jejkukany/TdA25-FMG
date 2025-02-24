@@ -58,8 +58,9 @@ USER nextjs
 
 # Expose necessary ports
 EXPOSE 3000  
-EXPOSE 4000  
+EXPOSE 4000
 
+ENV PORT = 4000  
 # Start both backend and frontend using PM2
 CMD node /app/frontend/server.js & node /app/backend/server.js
 
