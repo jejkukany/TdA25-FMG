@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/index";
-import type { BetterAuthPlugin } from "better-auth/plugins";
+import { admin, username, type BetterAuthPlugin } from "better-auth/plugins";
 
 export const userStatsPlugin = () => {
 	return {
@@ -11,26 +11,23 @@ export const userStatsPlugin = () => {
 				fields: {
 					uuid: {
 						type: "string",
-						required: false,
+						unique: true,
 					},
 					elo: {
 						type: "number",
-					},
-					isAdmin: {
-						type: "boolean",
-						defaultValue: false,
+						required: true,
 					},
 					wins: {
 						type: "number",
-						required: false,
+						required: true,
 					},
 					draws: {
 						type: "number",
-						required: false,
+						required: true,
 					},
 					losses: {
 						type: "number",
-						required: false,
+						required: true,
 					},
 				},
 			},
@@ -42,12 +39,9 @@ export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "sqlite", // or "mysql", "sqlite"
 	}),
-	plugins: [userStatsPlugin()],
+	plugins: [userStatsPlugin(), username(), admin()],
 	emailAndPassword: {
 		enabled: true,
 	},
-	trustedOrigins: [
-		"https://13682ac4.app.deploy.tourde.app",
-		"http://localhost:3000"
-	],
+	trustedOrigins: ["https://13682ac4.app.deploy.tourde.app"],
 });

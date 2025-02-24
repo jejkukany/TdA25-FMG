@@ -49,10 +49,10 @@ COPY --from=builder /app/.env.production ./
 COPY --from=builder /app/backend /app/backend
 
 # Copy SQLite database into frontend
-COPY --chmod=777 --from=builder /app/frontend/sqlite.db /app/frontend/sqlite.db
+COPY --chmod=777 --from=builder /app/sqlite.db /app/sqlite.db
 
 # Ensure sqlite.db is writable
-RUN chmod a+rw /app/frontend/sqlite.db
+RUN chmod a+rw /app/sqlite.db
 RUN chmod a+rw /app
 
 USER nextjs

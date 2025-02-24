@@ -19,6 +19,7 @@ import { Search } from "lucide-react";
 import { UserCheck } from "lucide-react";
 
 interface User {
+	id: string;
 	uuid: string;
 	username: string;
 	email: string;
@@ -26,7 +27,7 @@ interface User {
 	wins: number;
 	draws: number;
 	losses: number;
-	isBanned: boolean;
+	banned: boolean;
 }
 
 export default function AdminDashboard() {
@@ -38,7 +39,7 @@ export default function AdminDashboard() {
 	useEffect(() => {
 		if (isPending) return; // Wait for session to load
 
-		if (!session?.user?.isAdmin) {
+		if (session?.user?.role !== "admin") {
 			router.push("/");
 			return;
 		}
@@ -65,7 +66,18 @@ export default function AdminDashboard() {
 			console.error("Failed to fetch users:", error);
 		}
 	};
-
+	const banUser = async (id: string, banned: boolean) => {
+		if (!banned) {
+			await client.admin.banUser({
+				userId: id,
+			});
+		} else {
+			await client.admin.unbanUser({
+				userId: id,
+			});
+		}
+		fetchUsers();
+	};
 	const updateUser = async (uuid: string, data: Partial<User>) => {
 		try {
 			const response = await fetch(`/api/v1/users/${uuid}`, {
@@ -75,7 +87,7 @@ export default function AdminDashboard() {
 				},
 				body: JSON.stringify({
 					...data,
-					is_banned: data.isBanned, // Convert to snake_case for API
+					is_banned: data.banned, // Convert to snake_case for API
 				}),
 			});
 			if (response.ok) {
@@ -90,7 +102,7 @@ export default function AdminDashboard() {
 		return <div className="container mx-auto py-10">Loading...</div>;
 	}
 
-	if (!session?.user?.isAdmin) {
+	if (session?.user?.role !== "admin") {
 		return null;
 	}
 
@@ -153,18 +165,16 @@ export default function AdminDashboard() {
 									<TableCell className="flex items-center gap-2">
 										<Button
 											variant={
-												user.isBanned
+												user.banned
 													? "outline"
 													: "destructive"
 											}
 											onClick={() => {
-												updateUser(user.uuid, {
-													isBanned: !user.isBanned,
-												});
+												banUser(user.id, user.banned);
 											}}
 											className=""
 										>
-											{user.isBanned ? (
+											{user.banned ? (
 												<>
 													<UserCheck className="h-4 w-4 mr-2" />
 													Unban

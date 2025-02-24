@@ -16,12 +16,12 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 export default function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [name, setName] = useState("");
-// Removed unused image state
+	const [username, setUsername] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -38,42 +38,32 @@ export default function SignUp() {
 		setLoading(true);
 		setError(null);
 
-		if (!name || !email || !password) {
+		if (!username || !email || !password) {
 			setError("Please fill in all fields");
 			setLoading(false);
 			return;
 		}
 
 		try {
-			const response = await fetch('/api/v1/users', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					username: name,
+			client.signUp.email(
+				{
 					email,
 					password,
+					username,
+					name: username,
 					elo: 400,
-				}),
-			});
-
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.message || 'Failed to sign up');
-			}
-
-			// After successful signup, sign in the user
-			await client.signIn.email({
-				email,
-				password,
-			});
-
-			router.push('/');
-
+					wins: 0,
+					draws: 0,
+					losses: 0,
+					uuid: uuidv4(),
+				},
+				{
+					onSuccess: () => router.push("/"),
+					onError: (error) => setError(error.error.message),
+				}
+			);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Failed to sign up');
+			setError(err instanceof Error ? err.message : "Failed to sign up");
 		} finally {
 			setLoading(false);
 		}
@@ -97,15 +87,15 @@ export default function SignUp() {
 						}}
 					>
 						<div>
-							<Label htmlFor="name">Name</Label>
+							<Label htmlFor="username">Username</Label>
 							<Input
-								id="name"
+								id="username"
 								type="text"
-								value={name}
+								value={username}
 								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									setName(e.target.value)
+									setUsername(e.target.value)
 								}
-								placeholder="John Doe"
+								placeholder="johndoe"
 								required
 							/>
 						</div>
@@ -133,21 +123,6 @@ export default function SignUp() {
 								}
 								placeholder="••••••••"
 								required
-							/>
-						</div>
-						<div>
-							<Label htmlFor="image">
-								Profile Image (optional)
-							</Label>
-							<Input
-								id="image"
-								type="file"
-								onChange={(e) =>
-// Since image state was removed, we can remove this handler or
-// implement image handling if needed
-									e.preventDefault() // Prevent default for now since image handling is removed
-								}
-								accept="image/*"
 							/>
 						</div>
 						{error && (

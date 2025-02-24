@@ -20,39 +20,64 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState(""); // Changed from email to identifier
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
+  const isEmail = (value: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  };
+
   const signIn = async () => {
     setLoading(true);
     setError(null);
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       setError("Please fill in all fields");
       setLoading(false);
       return;
     }
 
-    await client.signIn.email(
-      {
-        email,
-        password,
-      },
-      {
-        onSuccess: () => {
-          router.push('/');
-        },
-        onError: (ctx) => {
-          setError(ctx.error.message);
-        },
-      },
-    );
-
-    setLoading(false);
+    try {
+      if (isEmail(identifier)) {
+        await client.signIn.email(
+          {
+            email: identifier,
+            password,
+          },
+          {
+            onSuccess: () => {
+              router.push('/');
+            },
+            onError: (ctx) => {
+              setError(ctx.error.message);
+            },
+          },
+        );
+      } else {
+        await client.signIn.username(
+          {
+            username: identifier,
+            password,
+          },
+          {
+            onSuccess: () => {
+              router.push('/');
+            },
+            onError: (ctx) => {
+              setError(ctx.error.message);
+            },
+          },
+        );
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to sign in");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -71,15 +96,15 @@ export default function SignIn() {
             }}
           >
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="identifier">Email or Username</Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
+                id="identifier"
+                type="text"
+                value={identifier}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
+                  setIdentifier(e.target.value)
                 }
-                placeholder="john@example.com"
+                placeholder="Email or username"
                 required
               />
             </div>

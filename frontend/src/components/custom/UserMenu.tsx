@@ -33,7 +33,7 @@ export function UserMenu() {
 	const handleSignOut = async () => {
 		await client.signOut();
 	};
-	console.log(user);
+	console.log(user?.role);
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
