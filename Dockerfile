@@ -10,26 +10,17 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy package files first
-COPY frontend/package*.json ./frontend/
-COPY backend/package*.json ./backend/
-
-# Create .dockerignore if you haven't already to exclude node_modules
-RUN npm install --prefix frontend
-RUN npm install --prefix backend
+# Copy package.json and lockfile, then install dependencies
+COPY package.json ./
+RUN npm install
 
 # Build stage
 FROM base AS builder
 WORKDIR /app
-
-# Copy source files
-COPY frontend ./frontend
-COPY backend ./backend
-
-# 🛠️ Rebuild better-sqlite3 to fix native module issue BEFORE building Next.js
-RUN npm rebuild better-sqlite3 --prefix frontend
+COPY . .
 
 # Build frontend (Next.js)
-RUN npm run build --prefix frontend
+RUN npm run build
 
 # Production stage
 FROM node:18-bullseye AS runner
@@ -49,25 +40,14 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy necessary files for production
-COPY --from=builder /app/frontend/public ./frontend/public
-COPY --from=builder /app/frontend/.next/standalone ./frontend/
-COPY --from=builder /app/frontend/.next/static ./frontend/.next/static
+COPY --chmod=765 sqlite.db /app
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-# Copy backend files
-COPY --from=builder /app/backend /app/backend
 
-# Copy SQLite database into frontend
-COPY --chmod=777 --from=builder /app/sqlite.db /app/sqlite.db
-
-# Ensure sqlite.db is writable
-RUN chmod a+rw /app/sqlite.db
 RUN chmod a+rw /app
 
 USER nextjs
-
-# Expose necessary ports
-EXPOSE 3000 
-
-# Use JSON format for CMD
-WORKDIR /app/frontend
-CMD ["npm", "start"]
+EXPOSE 3000
+CMD ["node", "server.js"]

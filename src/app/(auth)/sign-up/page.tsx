@@ -16,12 +16,11 @@ import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
 
 export default function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [username, setUsername] = useState("");
+	const [name, setName] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -38,30 +37,39 @@ export default function SignUp() {
 		setLoading(true);
 		setError(null);
 
-		if (!username || !email || !password) {
+		if (!name || !email || !password) {
 			setError("Please fill in all fields");
 			setLoading(false);
 			return;
 		}
 
 		try {
-			client.signUp.email(
-				{
+			const response = await fetch("/api/v1/users", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					username: name,
 					email,
 					password,
-					username,
-					name: username,
 					elo: 400,
-					wins: 0,
-					draws: 0,
-					losses: 0,
-					uuid: uuidv4(),
-				},
-				{
-					onSuccess: () => router.push("/"),
-					onError: (error) => setError(error.error.message),
-				}
-			);
+				}),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.message || "Failed to sign up");
+			}
+
+			// After successful signup, sign in the user
+			await client.signIn.email({
+				email,
+				password,
+			});
+
+			router.push("/");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to sign up");
 		} finally {
@@ -87,15 +95,15 @@ export default function SignUp() {
 						}}
 					>
 						<div>
-							<Label htmlFor="username">Username</Label>
+							<Label htmlFor="name">Name</Label>
 							<Input
-								id="username"
+								id="name"
 								type="text"
-								value={username}
+								value={name}
 								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									setUsername(e.target.value)
+									setName(e.target.value)
 								}
-								placeholder="johndoe"
+								placeholder="John Doe"
 								required
 							/>
 						</div>
