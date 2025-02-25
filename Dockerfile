@@ -9,17 +9,21 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copy package.json files and install dependencies
-COPY frontend/package.json ./frontend/
-COPY backend/package.json ./backend/
+# Copy package files first
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
 
+# Create .dockerignore if you haven't already to exclude node_modules
 RUN npm install --prefix frontend
 RUN npm install --prefix backend
 
 # Build stage
 FROM base AS builder
 WORKDIR /app
-COPY . .
+
+# Copy source files
+COPY frontend ./frontend
+COPY backend ./backend
 
 # 🛠️ Rebuild better-sqlite3 to fix native module issue BEFORE building Next.js
 RUN npm rebuild better-sqlite3 --prefix frontend
@@ -31,9 +35,14 @@ RUN npm run build --prefix frontend
 FROM node:18-bullseye AS runner
 WORKDIR /app
 
+# Use ARG for build-time variables
+ARG AUTH_SECRET
+ARG AUTH_URL
+
+# Set environment variables
 ENV NODE_ENV=production
-ENV BETTER_AUTH_SECRET=BbQpeDCVu5KA1zrCUuECuTGHf6ujmHhF
-ENV BETTER_AUTH_URL=https://13682ac4.app.deploy.tourde.app
+ENV BETTER_AUTH_SECRET=${AUTH_SECRET}
+ENV BETTER_AUTH_URL=${AUTH_URL}
 
 # Add a non-root user
 RUN addgroup --system --gid 1001 nodejs
@@ -59,6 +68,6 @@ USER nextjs
 # Expose necessary ports
 EXPOSE 3000 
 
-# Start both backend and frontend using PM2
-CMD node /app/frontend/server.js
-
+# Use JSON format for CMD
+WORKDIR /app/frontend
+CMD ["npm", "start"]
