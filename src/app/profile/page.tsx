@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, Target, MinusCircle, Minus } from "lucide-react";
 import Link from "next/link";
+import { MatchHistory } from "@/components/custom/profile/MatchHistory";
 
 export default function Profile() {
 	const { data: data, isPending } = client.useSession();
@@ -31,7 +32,6 @@ export default function Profile() {
 			</div>
 		);
 	}
-
 	return (
 		<div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
 			<Card className="w-full">
@@ -58,11 +58,15 @@ export default function Profile() {
 								{user.email}
 							</p>
 							<p className="text-sm text-muted-foreground">
-								Joined {new Date(user.createdAt).toLocaleDateString('en-US', {
-									month: 'long',
-									day: 'numeric',
-									year: 'numeric'
-								})}
+								Joined{" "}
+								{new Date(user.createdAt).toLocaleDateString(
+									"en-US",
+									{
+										month: "long",
+										day: "numeric",
+										year: "numeric",
+									}
+								)}
 							</p>
 						</div>
 					</div>
@@ -135,6 +139,8 @@ export default function Profile() {
 					</div>
 				</CardContent>
 			</Card>
+
+			{user?.uuid && <MatchHistory userUuid={user.uuid} />}
 		</div>
 	);
 }

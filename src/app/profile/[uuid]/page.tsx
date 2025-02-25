@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Trophy, Target, MinusCircle, Minus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MatchHistory } from "@/components/custom/profile/MatchHistory";
 
 interface UserProfile {
 	uuid: string;
@@ -159,6 +160,9 @@ export default function UserProfile() {
 					</div>
 				</CardContent>
 			</Card>
+
+			{/* Add Match History */}
+			<MatchHistory userUuid={user.uuid} />
 		</div>
 	);
 }

@@ -100,20 +100,25 @@ const SideBar = () => {
 											variant="outline"
 											className={cn(
 												"w-full flex flex-row items-center h-12 justify-center",
-												"/" + pathname.split("/")[1] === item.href &&
+												"/" + pathname.split("/")[1] ===
+													item.href &&
 													"bg-accent text-accent-foreground border-none"
 											)}
 										>
 											<a>
 												<item.icon
 													className={cn(
-														state === "collapsed" ? "h-6 w-6" : "h-4 w-4"
+														state === "collapsed"
+															? "h-6 w-6"
+															: "h-4 w-4"
 													)}
 												/>
 												<span
 													className={cn(
 														"font-semibold",
-														state === "collapsed" && !isMobile && "hidden"
+														state === "collapsed" &&
+															!isMobile &&
+															"hidden"
 													)}
 												>
 													{item.label}
