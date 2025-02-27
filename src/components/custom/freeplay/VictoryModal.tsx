@@ -1,4 +1,4 @@
-import { Trophy, Equal } from "lucide-react"
+import { Trophy, Equal, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
@@ -7,9 +7,10 @@ interface VictoryModalProps {
   onRematch: () => void
   onClose: () => void
   result: "X" | "O" | "draw" | null
+  isWaitingForRematch?: boolean
 }
 
-export function VictoryModal({ isOpen, result, onRematch, onClose }: VictoryModalProps) {
+export function VictoryModal({ isOpen, result, onRematch, onClose, isWaitingForRematch = false }: VictoryModalProps) {
   const getResultImage = () => {
     if (result === "X") {
       return <img src="/TDA/X_modre.svg" alt="Winner X" className="w-6 h-6 inline-block" />
@@ -46,13 +47,24 @@ export function VictoryModal({ isOpen, result, onRematch, onClose }: VictoryModa
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-row gap-2 pt-2">
-            <Button
-              onClick={onRematch}
-              variant="outline"
-              className="flex-1 border-input bg-background hover:bg-accent hover:text-accent-foreground"
-            >
-              Play Again
-            </Button>
+            {isWaitingForRematch ? (
+              <Button
+                disabled
+                variant="outline"
+                className="flex-1 border-input bg-background items-center justify-center"
+              >
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Waiting for opponent...
+              </Button>
+            ) : (
+              <Button
+                onClick={onRematch}
+                variant="outline"
+                className="flex-1 border-input bg-background hover:bg-accent hover:text-accent-foreground"
+              >
+                Play Again
+              </Button>
+            )}
           </div>
         </DialogContent>
       </Dialog>

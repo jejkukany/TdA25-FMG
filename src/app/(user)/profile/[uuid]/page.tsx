@@ -6,6 +6,7 @@ import { Trophy, Target, MinusCircle, Minus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MatchHistory } from "@/components/custom/profile/MatchHistory";
+import Loading from "@/app/loading";
 
 interface UserProfile {
 	uuid: string;
@@ -47,9 +48,7 @@ export default function UserProfile() {
 
 	if (isLoading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div>Loading...</div>
-			</div>
+			<Loading />
 		);
 	}
 

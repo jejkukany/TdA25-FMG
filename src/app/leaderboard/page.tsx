@@ -15,6 +15,7 @@ import { Trophy, Medal, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { client } from "@/server/auth/client";
+import Loading from "../loading";
 
 interface User {
 	uuid: string;
@@ -82,9 +83,7 @@ export default function Leaderboard() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="text-lg">Loading...</div>
-			</div>
+			<Loading />
 		);
 	}
 

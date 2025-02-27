@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Shield, Link } from "lucide-react";
 import { Search } from "lucide-react";
 import { BanDialog } from "@/components/custom/admin/BanDialog";
+import Loading from "../loading";
 
 interface User {
 	id: string;
@@ -89,7 +90,7 @@ export default function AdminDashboard() {
 	};
 
 	if (isPending) {
-		return <div className="container mx-auto py-10">Loading...</div>;
+		return <Loading />;
 	}
 
 	if (session?.user?.role !== "admin") {

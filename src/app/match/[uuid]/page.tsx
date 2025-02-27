@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Play, Pause, SkipBack, SkipForward, RotateCcw } from "lucide-react";
+import Loading from "@/app/loading";
 
 interface Match {
 	uuid: string;
@@ -114,7 +115,7 @@ export default function MatchPage({ params }: { params: Promise<{ uuid: string }
 		setIsPlaying(false);
 	}, []);
 
-	if (!match) return <div>Loading...</div>;
+	if (!match) return <Loading />;
 
 	return (
 		<div className="flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-8 lg:gap-6 min-h-screen">

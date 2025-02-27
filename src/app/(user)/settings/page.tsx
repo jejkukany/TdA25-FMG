@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { SecuritySettings } from "@/components/custom/account/SecuritySettings";
 import Link from "next/link";
+import Loading from "@/app/loading";
 
 function Settings() {
 	const { data: data, isPending } = client.useSession();
@@ -12,9 +13,7 @@ function Settings() {
 
 	if (isPending) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="">Loading...</div>
-			</div>
+			<Loading />
 		);
 	}
 

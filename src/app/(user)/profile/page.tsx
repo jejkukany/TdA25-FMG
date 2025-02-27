@@ -7,6 +7,7 @@ import { Trophy, Target, MinusCircle, Minus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { MatchHistory } from "@/components/custom/profile/MatchHistory";
 import { Button } from "@/components/ui/button";
+import Loading from "@/app/loading";
 
 export default function Profile() {
 	const { data: data, isPending } = client.useSession();
@@ -14,9 +15,7 @@ export default function Profile() {
 
 	if (isPending) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<div className="">Loading...</div>
-			</div>
+			<Loading />
 		);
 	}
 
