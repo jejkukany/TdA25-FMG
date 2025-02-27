@@ -7,6 +7,7 @@ import { Trophy, Target, MinusCircle, Minus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { MatchHistory } from "@/components/custom/profile/MatchHistory";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Profile() {
 	const { data: data, isPending } = client.useSession();
@@ -55,7 +56,9 @@ export default function Profile() {
 						</Avatar>
 						<div className="space-y-2">
 							<div className="flex items-center gap-4">
-								<h2 className="text-3xl font-bold">{user.name}</h2>
+								<h2 className="text-3xl font-bold">
+									{user.name}
+								</h2>
 								<Link href="/settings">
 									<Button variant="ghost" size="icon">
 										<Pencil className="h-4 w-4" />
@@ -80,8 +83,8 @@ export default function Profile() {
 					</div>
 
 					{/* Stats Cards */}
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
-						<Card>
+					<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
+						<Card className="flex-1">
 							<CardContent className="p-8 flex items-center gap-4">
 								<div className="p-4 bg-primary/10 rounded-lg">
 									<Target className="h-8 w-8 text-primary" />
