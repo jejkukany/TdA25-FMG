@@ -11,19 +11,24 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
+	CardFooter,
 } from "@/components/ui/card";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
+import Link from "next/link";
 
 export default function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
 	const [username, setUsername] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const router = useRouter();
 
@@ -34,12 +39,19 @@ export default function SignUp() {
 			localStorage.setItem("previousUrl", currentPath);
 		}
 	}, []);
+	
 	const signUp = async () => {
 		setLoading(true);
 		setError(null);
 
 		if (!username || !email || !password) {
 			setError("Please fill in all fields");
+			setLoading(false);
+			return;
+		}
+
+		if (password !== confirmPassword) {
+			setError("Passwords do not match");
 			setLoading(false);
 			return;
 		}
@@ -114,16 +126,59 @@ export default function SignUp() {
 						</div>
 						<div>
 							<Label htmlFor="password">Password</Label>
-							<Input
-								id="password"
-								type="password"
-								value={password}
-								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									setPassword(e.target.value)
-								}
-								placeholder="••••••••"
-								required
-							/>
+							<div className="relative">
+								<Input
+									id="password"
+									type={showPassword ? "text" : "password"}
+									value={password}
+									onChange={(e: ChangeEvent<HTMLInputElement>) =>
+										setPassword(e.target.value)
+									}
+									placeholder="••••••••"
+									required
+								/>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="absolute right-0 top-0 h-full px-3"
+									onClick={() => setShowPassword(!showPassword)}
+								>
+									{showPassword ? (
+										<EyeOff className="h-4 w-4" />
+									) : (
+										<Eye className="h-4 w-4" />
+									)}
+								</Button>
+							</div>
+						</div>
+						<div>
+							<Label htmlFor="confirmPassword">Confirm Password</Label>
+							<div className="relative">
+								<Input
+									id="confirmPassword"
+									type={showConfirmPassword ? "text" : "password"}
+									value={confirmPassword}
+									onChange={(e: ChangeEvent<HTMLInputElement>) =>
+										setConfirmPassword(e.target.value)
+									}
+									placeholder="••••••••"
+									required
+								/>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="absolute right-0 top-0 h-full px-3"
+									onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+								>
+									{showConfirmPassword ? (
+										<EyeOff className="h-4 w-4" />
+									) : (
+										<Eye className="h-4 w-4" />
+									)}
+								</Button>
+							</div>
 						</div>
 						{error && (
 							<Alert variant="destructive">
@@ -148,6 +203,17 @@ export default function SignUp() {
 						</Button>
 					</form>
 				</CardContent>
+				<CardFooter className="flex justify-center">
+					<p className="text-sm text-gray-600">
+						Already have an account?{" "}
+						<Link
+							href="/sign-in"
+							className="font-medium text-primary hover:underline"
+						>
+							Sign in
+						</Link>
+					</p>
+				</CardFooter>
 			</Card>
 		</div>
 	);
