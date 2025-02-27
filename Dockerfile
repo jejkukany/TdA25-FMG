@@ -44,10 +44,14 @@ COPY --chmod=765 sqlite.db /app
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/server.js ./server.js
+COPY --from=builder /app/node_modules ./node_modules
+
 
 
 RUN chmod a+rw /app
 
 USER nextjs
 EXPOSE 3000
-CMD ["node", "server.ts"]
+CMD ["node", "server.js"]
+

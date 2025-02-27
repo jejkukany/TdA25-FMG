@@ -1,19 +1,6 @@
-import { createServer } from "node:http";
-import next from "next";
-import { Server, Socket } from "socket.io";
-
-interface GameRoom {
-	players: Socket[];
-	board: (string | null)[];
-	turn: "X" | "O";
-	winner?: "X" | "O" | null;
-}
-
-interface GameState {
-	board: (string | null)[];
-	turn: "X" | "O";
-	winner?: "X" | "O" | null;
-}
+const { createServer } = require("node:http");
+const next = require("next");
+const { Server } = require("socket.io");
 
 const dev = process.env.NODE_ENV !== "production";
 const port = parseInt(process.env.PORT || "3000", 10);
@@ -25,7 +12,7 @@ app.prepare().then(() => {
 	const httpServer = createServer(handler);
 
 	const io = new Server(httpServer);
-	const rooms: Record<string, GameRoom> = {};
+	const rooms = {};
 
 	io.on("connection", (socket) => {
 		// ...
