@@ -13,17 +13,18 @@ import {
 	CardTitle,
 	CardFooter,
 } from "@/components/ui/card";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function SignIn() {
-	const [identifier, setIdentifier] = useState(""); // Changed from email to identifier
+	const [identifier, setIdentifier] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const router = useRouter();
 
@@ -112,16 +113,31 @@ export default function SignIn() {
 						</div>
 						<div>
 							<Label htmlFor="password">Password</Label>
-							<Input
-								id="password"
-								type="password"
-								value={password}
-								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									setPassword(e.target.value)
-								}
-								placeholder="••••••••"
-								required
-							/>
+							<div className="relative">
+								<Input
+									id="password"
+									type={showPassword ? "text" : "password"}
+									value={password}
+									onChange={(e: ChangeEvent<HTMLInputElement>) =>
+										setPassword(e.target.value)
+									}
+									placeholder="••••••••"
+									required
+								/>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="absolute right-0 top-0 h-full px-3"
+									onClick={() => setShowPassword(!showPassword)}
+								>
+									{showPassword ? (
+										<EyeOff className="h-4 w-4" />
+									) : (
+										<Eye className="h-4 w-4" />
+									)}
+								</Button>
+							</div>
 						</div>
 
 						{error && (
