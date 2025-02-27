@@ -41,7 +41,7 @@ export function UserMenu() {
 					size="lg"
 					className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 				>
-					<Avatar className="h-12 w-12 rounded-lg">
+					<Avatar className="h-12 w-12 rounded-lg p-1">
 						<AvatarImage
 							src={user?.image ?? ""}
 							alt={user?.name ?? "User"}
