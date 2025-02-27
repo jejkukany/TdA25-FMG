@@ -3,7 +3,7 @@ const next = require("next");
 const { Server } = require("socket.io");
 
 const dev = process.env.NODE_ENV !== "production";
-const port = parseInt(process.env.PORT || "3000", 10);
+const port = parseInt(process.env.PORT || "3001", 10);
 const app = next({ dev });
 const handler = app.getRequestHandler();
 
@@ -24,39 +24,61 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("joinRoom", () => {
-      let roomId = null;
-      
-      // Find an available room or create new one
-      for (const [id, room] of rooms.entries()) {
-        if (room.players.length < 2) {
-          roomId = id;
-          break;
-        }
-      }
+    socket.on("createRoom", () => {
+      // Generate a random 6-digit room ID between 100000-999999
+      const roomId = Math.floor(100000 + Math.random() * 900000).toString();
+      rooms.set(roomId, {
+        players: [],
+        board: createEmptyBoard(),
+        currentPlayer: "X",
+        host: socket.id
+      });
+      socket.emit("roomCreated", { roomId });
+    });
 
-      if (!roomId) {
-        roomId = socket.id;
-        rooms.set(roomId, {
-          players: [],
-          board: createEmptyBoard(),
-          currentPlayer: "X"
-        });
-      }
-
+    socket.on("joinRoom", ({ roomId }) => {
       const room = rooms.get(roomId);
-      room.players.push(socket.id);
+      if (!room) {
+        socket.emit("error", "Room not found");
+        return;
+      }
+      if (room.players.length >= 2) {
+        socket.emit("error", "Room is full");
+        return;
+      }
+
+      // Check if this socket is already in the room to prevent duplicate entries
+      if (!room.players.includes(socket.id)) {
+        room.players.push(socket.id);
+      }
       socket.join(roomId);
 
+      // Always emit waitingForPlayer if there's only one player
       if (room.players.length === 1) {
-        socket.emit("waitingForPlayer");
-      } else if (room.players.length === 2) {
-        io.to(room.players[0]).emit("assignPlayer", "X");
-        io.to(room.players[1]).emit("assignPlayer", "O");
-        io.to(roomId).emit("gameState", {
-          board: room.board,
-          currentPlayer: room.currentPlayer
-        });
+        socket.emit("waitingForPlayer", { roomId });
+      } 
+      // Only start the game when a second player joins
+      else if (room.players.length === 2) {
+        // Second player joining, start the game
+        // Assign X to first player and O to second player
+        const firstPlayerSocket = room.players[0];
+        const secondPlayerSocket = room.players[1];
+        
+        // Notify the host that a player has joined
+        io.to(room.host).emit("playerJoined", { roomId });
+        
+        // Wait a short time before assigning players to ensure the playerJoined event is processed
+        setTimeout(() => {
+          // Send individual player assignments
+          io.to(firstPlayerSocket).emit("assignPlayer", "X");
+          io.to(secondPlayerSocket).emit("assignPlayer", "O");
+          
+          // Start the game
+          io.to(roomId).emit("gameState", {
+            board: room.board,
+            currentPlayer: room.currentPlayer
+          });
+        }, 1000); // 1 second delay
       }
     });
 
@@ -65,7 +87,7 @@ app.prepare().then(() => {
       if (!room) return;
 
       const index = row * 15 + col;
-      if (room.board[row][col] === null && 
+      if (room.board[row][col] === "" && 
           room.players[room.currentPlayer === "X" ? 0 : 1] === socket.id) {
         
         room.board[row][col] = room.currentPlayer;
@@ -107,5 +129,5 @@ app.prepare().then(() => {
 });
 
 function createEmptyBoard() {
-  return Array(15).fill(null).map(() => Array(15).fill(null));
+  return Array(15).fill(null).map(() => Array(15).fill(""));
 }

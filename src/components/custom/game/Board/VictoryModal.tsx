@@ -18,7 +18,7 @@ export function VictoryModal({ isOpen, result, onRematch, onClose }: VictoryModa
       return <img src="/TDA/O_cervene.svg" alt="Winner O" className="w-6 h-6 inline-block" />
     }
     if (result === "draw") {
-      return <Equal className="w-6 h-6 inline-block text-yellow-400" />
+      return "Atleast you didn't loose"
     }
     return null
   }
