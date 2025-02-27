@@ -298,7 +298,7 @@ const Board: React.FC<BoardProps> = ({ initialBoard, playerSymbol }) => {
                     {isYourTurn ? (
                       <span className="text-green-600">Your turn</span>
                     ) : (
-                      <span className="text-amber-600">Opponent's turn</span>
+                      <span className="text-amber-600">Opponent&apos;s turn</span>
                     )}
                   </div>
                 </div>

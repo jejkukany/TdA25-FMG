@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { socket } from "@/socket";
 import { useSearchParams, useRouter } from "next/navigation";
-import Board from "@/components/custom//freeplay/Board";
+import Board from "@/components/custom/freeplay/Board";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -53,11 +53,15 @@ export default function Home() {
 				setWaiting(true);
 				// Update the URL with the room ID but don't navigate
 				// This prevents the host from being redirected immediately
-				window.history.replaceState(null, "", `/freeplay?room=${roomData.roomId}`);
+				window.history.replaceState(
+					null,
+					"",
+					`/freeplay?room=${roomData.roomId}`
+				);
 			}
 		});
 
-		socket.on("playerJoined", (roomData) => {
+		socket.on("playerJoined", () => {
 			// This event is received by the host when a second player joins
 			console.log("Player joined the room");
 			// The host will automatically receive the assignPlayer event next
@@ -99,7 +103,9 @@ export default function Home() {
 	};
 
 	const copyInviteLink = () => {
-		const inviteLink = `${window.location.origin}/freeplay?room=${roomId || createdRoom}`;
+		const inviteLink = `${window.location.origin}/freeplay?room=${
+			roomId || createdRoom
+		}`;
 		navigator.clipboard.writeText(inviteLink);
 		alert("Invite link copied to clipboard!");
 	};
@@ -119,21 +125,31 @@ export default function Home() {
 					Create Game
 				</Button>
 			)}
-			
+
 			{/* Room creation state is no longer needed as we auto-join */}
 
 			{waiting && (
 				<div className="text-center space-y-4">
-					<p className="text-lg">Waiting for another player to join...</p>
+					<p className="text-lg">
+						Waiting for another player to join...
+					</p>
 					{roomId && isHost && (
 						<div>
-							<p className="mb-2">Room Code: <span className="font-bold">{roomId}</span></p>
-							<Button onClick={copyInviteLink}>Copy Invite Link</Button>
+							<p className="mb-2">
+								Room Code:{" "}
+								<span className="font-bold">{roomId}</span>
+							</p>
+							<Button onClick={copyInviteLink}>
+								Copy Invite Link
+							</Button>
 						</div>
 					)}
 					{roomId && !isHost && (
 						<div>
-							<p className="mb-2">Room Code: <span className="font-bold">{roomId}</span></p>
+							<p className="mb-2">
+								Room Code:{" "}
+								<span className="font-bold">{roomId}</span>
+							</p>
 						</div>
 					)}
 				</div>
@@ -147,9 +163,11 @@ export default function Home() {
 						</p>
 					</div>
 					<Board
-        				initialBoard={Array.from({ length: 15 }, () => Array(15).fill(""))}
-        				playerSymbol={player}
-      				/>
+						initialBoard={Array.from({ length: 15 }, () =>
+							Array(15).fill("")
+						)}
+						playerSymbol={player}
+					/>
 				</div>
 			)}
 		</div>
