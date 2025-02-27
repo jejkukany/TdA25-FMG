@@ -26,8 +26,9 @@ export function PasswordForm() {
             setCurrentPassword("");
             setNewPassword("");
             setIsOpen(false);
-        } catch (error: any) {
-            setPasswordError(error.message || "Failed to change password");
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to change password";
+            setPasswordError(errorMessage);
         } finally {
             setIsLoading(false);
         }

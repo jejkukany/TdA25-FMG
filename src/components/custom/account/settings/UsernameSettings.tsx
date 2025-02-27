@@ -32,8 +32,9 @@ export function UsernameSettings() {
             }
             setName("");
             setIsOpen(false);
-        } catch (error: any) {
-            setNameError(error.message || "Failed to update username");
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to update username";
+            setNameError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -70,7 +71,7 @@ export function UsernameSettings() {
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Change Username</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Are you sure you want to change your username to "{name}"?
+                                    Are you sure you want to change your username to &quot;{name}&quot;?
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>

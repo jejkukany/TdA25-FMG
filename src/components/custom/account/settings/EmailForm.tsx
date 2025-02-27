@@ -23,8 +23,9 @@ export function EmailForm() {
             });
             setNewEmail("");
             setIsOpen(false);
-        } catch (error: any) {
-            setEmailError(error.message || "Failed to change email");
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to change email";
+            setEmailError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -56,7 +57,7 @@ export function EmailForm() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Change Email</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to change your email to "{newEmail}"? You will need to verify your new email address.
+                            Are you sure you want to change your email to &quot;{newEmail}&quot;? You will need to verify your new email address.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
