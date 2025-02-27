@@ -71,7 +71,14 @@ export default function Leaderboard() {
 					searchTerm.toLowerCase()
 				)
 		)
-		.sort((a, b) => b.elo - a.elo);
+		.sort((a, b) => {
+			// First sort by ELO
+			if (b.elo !== a.elo) return b.elo - a.elo;
+			// If ELO is the same, sort by total matches
+			const aTotalMatches = a.wins + a.draws + a.losses;
+			const bTotalMatches = b.wins + b.draws + b.losses;
+			return bTotalMatches - aTotalMatches;
+		});
 
 	if (loading) {
 		return (
@@ -104,9 +111,12 @@ export default function Leaderboard() {
 							<TableHeader>
 								<TableRow>
                                   <TableHead className="w-16 text-right pr-8">Rank</TableHead>
-                                  <TableHead className="w-[50%] pl-4">Player</TableHead>
-                                  <TableHead className="text-right w-[150px] pr-8">ELO</TableHead>
-                                  <TableHead className="text-right w-[150px] pr-8">Win Rate</TableHead>
+                                  <TableHead className="w-[30%] pl-4">Player</TableHead>
+                                  <TableHead className="text-right w-[100px] pr-8">ELO</TableHead>
+                                  <TableHead className="text-right w-[100px] pr-8">Win Rate</TableHead>
+                                  <TableHead className="text-right w-[80px] pr-8">W</TableHead>
+                                  <TableHead className="text-right w-[80px] pr-8">D</TableHead>
+                                  <TableHead className="text-right w-[80px] pr-8">L</TableHead>
                                   <TableHead className="text-right w-[100px] pr-8">Games</TableHead>
                                 </TableRow>
 							</TableHeader>
@@ -172,6 +182,15 @@ export default function Leaderboard() {
 											</TableCell>
 											<TableCell className="text-right pr-8">
 												{winRate}%
+											</TableCell>
+											<TableCell className="text-right pr-8 text-green-600 font-medium">
+												{user.wins}
+											</TableCell>
+											<TableCell className="text-right pr-8 text-gray-500 font-medium">
+												{user.draws}
+											</TableCell>
+											<TableCell className="text-right pr-8 text-red-600 font-medium">
+												{user.losses}
 											</TableCell>
 											<TableCell className="text-right pr-8 text-muted-foreground">
 												{totalGames}
