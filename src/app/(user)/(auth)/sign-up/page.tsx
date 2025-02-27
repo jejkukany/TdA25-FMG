@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { client } from "@/server/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,65 +11,94 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-	CardFooter,
 } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { v4 as uuidv4 } from "uuid";
 
-export default function SignIn() {
+export default function SignUp() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const router = useRouter();
 
-	const signIn = async () => {
+	useEffect(() => {
+		// Store the current URL (excluding the sign-in page) in localStorage
+		const currentPath = window.location.pathname;
+		if (currentPath !== "/sign-up") {
+			localStorage.setItem("previousUrl", currentPath);
+		}
+	}, []);
+	const signUp = async () => {
 		setLoading(true);
 		setError(null);
 
-		if (!email || !password) {
+		if (!username || !email || !password) {
 			setError("Please fill in all fields");
 			setLoading(false);
 			return;
 		}
 
-		await client.signIn.email(
-			{
-				email,
-				password,
-			},
-			{
-				onSuccess: () => {
-					router.push("/");
+		try {
+			client.signUp.email(
+				{
+					email,
+					password,
+					username,
+					name: username,
+					elo: 400,
+					wins: 0,
+					draws: 0,
+					losses: 0,
+					uuid: uuidv4(),
 				},
-				onError: (ctx) => {
-					setError(ctx.error.message);
-				},
-			}
-		);
-
-		setLoading(false);
+				{
+					onSuccess: () => router.push("/"),
+					onError: (error) => setError(error.error.message),
+				}
+			);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to sign up");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	return (
 		<div className="flex min-h-screen min-w-96 items-center justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:px-8">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<CardTitle>Sign In</CardTitle>
-					<CardDescription>Sign in to get started</CardDescription>
+					<CardTitle>Create an account</CardTitle>
+					<CardDescription>
+						Sign up to get started with our service
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form
 						className="space-y-4"
 						onSubmit={async (e) => {
 							e.preventDefault();
-							await signIn();
+							await signUp();
 						}}
 					>
+						<div>
+							<Label htmlFor="username">Username</Label>
+							<Input
+								id="username"
+								type="text"
+								value={username}
+								onChange={(e: ChangeEvent<HTMLInputElement>) =>
+									setUsername(e.target.value)
+								}
+								placeholder="johndoe"
+								required
+							/>
+						</div>
 						<div>
 							<Label htmlFor="email">Email</Label>
 							<Input
@@ -96,7 +125,6 @@ export default function SignIn() {
 								required
 							/>
 						</div>
-
 						{error && (
 							<Alert variant="destructive">
 								<AlertCircle className="h-4 w-4" />
@@ -112,25 +140,14 @@ export default function SignIn() {
 							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Signing in...
+									Signing up...
 								</>
 							) : (
-								"Sign In"
+								"Sign Up"
 							)}
 						</Button>
 					</form>
 				</CardContent>
-				<CardFooter className="flex justify-center">
-					<p className="text-sm text-gray-600">
-						Don&apos;t have an account?{" "}
-						<Link
-							href="/sign-up"
-							className="font-medium text-primary hover:underline"
-						>
-							Sign up
-						</Link>
-					</p>
-				</CardFooter>
 			</Card>
 		</div>
 	);

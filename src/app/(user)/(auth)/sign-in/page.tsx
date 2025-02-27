@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { client } from "@/server/auth/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,67 +11,70 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
+	CardFooter,
 } from "@/components/ui/card";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function SignUp() {
-	const [email, setEmail] = useState("");
+export default function SignIn() {
+	const [identifier, setIdentifier] = useState(""); // Changed from email to identifier
 	const [password, setPassword] = useState("");
-	const [name, setName] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const router = useRouter();
 
-	useEffect(() => {
-		// Store the current URL (excluding the sign-in page) in localStorage
-		const currentPath = window.location.pathname;
-		if (currentPath !== "/sign-up") {
-			localStorage.setItem("previousUrl", currentPath);
-		}
-	}, []);
-	const signUp = async () => {
+	const isEmail = (value: string) => {
+		return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+	};
+
+	const signIn = async () => {
 		setLoading(true);
 		setError(null);
 
-		if (!name || !email || !password) {
+		if (!identifier || !password) {
 			setError("Please fill in all fields");
 			setLoading(false);
 			return;
 		}
 
 		try {
-			const response = await fetch("/api/v1/users", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					username: name,
-					email,
-					password,
-					elo: 400,
-				}),
-			});
-
-			const data = await response.json();
-
-			if (!response.ok) {
-				throw new Error(data.message || "Failed to sign up");
+			if (isEmail(identifier)) {
+				await client.signIn.email(
+					{
+						email: identifier,
+						password,
+					},
+					{
+						onSuccess: () => {
+							router.push("/");
+						},
+						onError: (ctx) => {
+							setError(ctx.error.message);
+						},
+					}
+				);
+			} else {
+				await client.signIn.username(
+					{
+						username: identifier,
+						password,
+					},
+					{
+						onSuccess: () => {
+							router.push("/");
+						},
+						onError: (ctx) => {
+							setError(ctx.error.message);
+						},
+					}
+				);
 			}
-
-			// After successful signup, sign in the user
-			await client.signIn.email({
-				email,
-				password,
-			});
-
-			router.push("/");
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to sign up");
+			setError(err instanceof Error ? err.message : "Failed to sign in");
 		} finally {
 			setLoading(false);
 		}
@@ -81,42 +84,29 @@ export default function SignUp() {
 		<div className="flex min-h-screen min-w-96 items-center justify-center px-4 py-12 sm:px-6 lg:w-1/2 lg:px-8">
 			<Card className="w-full max-w-md">
 				<CardHeader>
-					<CardTitle>Create an account</CardTitle>
-					<CardDescription>
-						Sign up to get started with our service
-					</CardDescription>
+					<CardTitle>Sign In</CardTitle>
+					<CardDescription>Sign in to get started</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form
 						className="space-y-4"
 						onSubmit={async (e) => {
 							e.preventDefault();
-							await signUp();
+							await signIn();
 						}}
 					>
 						<div>
-							<Label htmlFor="name">Name</Label>
+							<Label htmlFor="identifier">
+								Email or Username
+							</Label>
 							<Input
-								id="name"
+								id="identifier"
 								type="text"
-								value={name}
+								value={identifier}
 								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									setName(e.target.value)
+									setIdentifier(e.target.value)
 								}
-								placeholder="John Doe"
-								required
-							/>
-						</div>
-						<div>
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								type="email"
-								value={email}
-								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									setEmail(e.target.value)
-								}
-								placeholder="john@example.com"
+								placeholder="Email or username"
 								required
 							/>
 						</div>
@@ -133,6 +123,7 @@ export default function SignUp() {
 								required
 							/>
 						</div>
+
 						{error && (
 							<Alert variant="destructive">
 								<AlertCircle className="h-4 w-4" />
@@ -148,14 +139,25 @@ export default function SignUp() {
 							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Signing up...
+									Signing in...
 								</>
 							) : (
-								"Sign Up"
+								"Sign In"
 							)}
 						</Button>
 					</form>
 				</CardContent>
+				<CardFooter className="flex justify-center">
+					<p className="text-sm text-gray-600">
+						Don&apos;t have an account?{" "}
+						<Link
+							href="/sign-up"
+							className="font-medium text-primary hover:underline"
+						>
+							Sign up
+						</Link>
+					</p>
+				</CardFooter>
 			</Card>
 		</div>
 	);

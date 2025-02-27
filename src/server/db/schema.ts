@@ -56,12 +56,16 @@ export const user = sqliteTable("user", {
 	image: text("image"),
 	createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 	updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
-	isAdmin: integer("is_admin", { mode: "boolean" }),
 	uuid: text("uuid").unique(),
-	elo: integer("elo").default(400),
-	wins: integer("wins").default(0),
-	draws: integer("draws").default(0),
-	losses: integer("losses").default(0),
+	elo: integer("elo").notNull(),
+	wins: integer("wins").notNull(),
+	draws: integer("draws").notNull(),
+	losses: integer("losses").notNull(),
+	username: text("username").unique(),
+	role: text("role"),
+	banned: integer("banned", { mode: "boolean" }),
+	banReason: text("ban_reason"),
+	banExpires: integer("ban_expires", { mode: "timestamp" }),
 });
 
 export const session = sqliteTable("session", {
@@ -75,6 +79,7 @@ export const session = sqliteTable("session", {
 	userId: text("user_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
+	impersonatedBy: text("impersonated_by"),
 });
 
 export const account = sqliteTable("account", {

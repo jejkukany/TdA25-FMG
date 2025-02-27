@@ -3,9 +3,10 @@
 import { client } from "@/server/auth/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, Target, MinusCircle, Minus } from "lucide-react";
+import { Trophy, Target, MinusCircle, Minus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { MatchHistory } from "@/components/custom/profile/MatchHistory";
+import { Button } from "@/components/ui/button";
 
 export default function Profile() {
 	const { data: data, isPending } = client.useSession();
@@ -53,7 +54,14 @@ export default function Profile() {
 							</AvatarFallback>
 						</Avatar>
 						<div className="space-y-2">
-							<h2 className="text-3xl font-bold">{user.name}</h2>
+							<div className="flex items-center gap-4">
+								<h2 className="text-3xl font-bold">{user.name}</h2>
+								<Link href="/settings">
+									<Button variant="ghost" size="icon">
+										<Pencil className="h-4 w-4" />
+									</Button>
+								</Link>
+							</div>
 							<p className="text-lg text-muted-foreground">
 								{user.email}
 							</p>

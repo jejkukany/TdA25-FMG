@@ -12,19 +12,6 @@ export async function POST(request: Request) {
 			throw new Error("Invalid request body");
 		}
 
-		// Check if username already exists
-		const existingUser = await db
-			.select()
-			.from(user)
-			.where(eq(user.name, username));
-
-		if (existingUser.length > 0) {
-			return NextResponse.json(
-				{ code: 400, message: "Username already exists" },
-				{ status: 400 }
-			);
-		}
-
 		const uuid = uuidv4();
 		await new Promise((resolve, reject) => {
 			client.signUp.email(
@@ -32,11 +19,12 @@ export async function POST(request: Request) {
 					email,
 					password,
 					name: username,
+					username: username,
 					elo: elo,
+					uuid: uuid,
 					wins: 0,
 					draws: 0,
 					losses: 0,
-					uuid: uuid,
 				},
 				{
 					onSuccess: resolve,
@@ -54,7 +42,7 @@ export async function POST(request: Request) {
 			{
 				uuid: currentUser[0].uuid,
 				createdAt: currentUser[0].createdAt,
-				username: currentUser[0].name,
+				username: currentUser[0].username,
 				email: currentUser[0].email,
 				elo: currentUser[0].elo,
 				wins: currentUser[0].wins,
@@ -74,14 +62,16 @@ export async function GET() {
 	try {
 		const users = await db
 			.select({
+				id: user.id,
 				uuid: user.uuid,
 				createdAt: user.createdAt,
-				username: user.name,
+				username: user.username,
 				email: user.email,
 				elo: user.elo,
 				wins: user.wins,
 				draws: user.draws,
 				losses: user.losses,
+				banned: user.banned,
 			})
 			.from(user);
 
