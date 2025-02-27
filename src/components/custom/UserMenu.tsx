@@ -19,6 +19,7 @@ import {
 	Moon,
 	LogIn,
 	UserPlus,
+	Shield,
 } from "lucide-react";
 import Link from "next/link";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
@@ -134,6 +135,14 @@ export function UserMenu() {
 								<span>Settings</span>
 							</Link>
 						</DropdownMenuItem>
+						{user.role === "admin" && (
+							<DropdownMenuItem asChild>
+								<Link href="/admin">
+									<Shield className="mr-2 h-4 w-4" />
+									<span>Admin Dashboard</span>
+								</Link>
+							</DropdownMenuItem>
+						)}
 					</>
 				) : (
 					<>

@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { Shield, Gavel, Link } from "lucide-react";
 import { Search } from "lucide-react";
 import { UserCheck } from "lucide-react";
+import { BanDialog } from "@/components/custom/admin/BanDialog";
 
 interface User {
 	id: string;
@@ -28,6 +29,8 @@ interface User {
 	draws: number;
 	losses: number;
 	banned: boolean;
+	banReason?: string;
+	banExpires?: string; // Changed from number to string for ISO date format
 }
 
 export default function AdminDashboard() {
@@ -107,24 +110,24 @@ export default function AdminDashboard() {
 	}
 
 	return (
-		<div className="container mx-auto py-10">
+		<div className="container mx-auto py-10 px-4">
 			<Card>
-				<CardHeader className="flex flex-row items-center justify-between">
-					<CardTitle className="text-2xl font-bold flex items-center gap-2">
-						<Shield className="h-6 w-6" />
+				<CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+					<CardTitle className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+						<Shield className="h-5 w-5 sm:h-6 sm:w-6" />
 						Admin Dashboard
 					</CardTitle>
-					<div className="relative w-72">
+					<div className="relative w-full sm:w-72">
 						<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
 						<Input
-							placeholder="Search by name, email, or UUID..."
+							placeholder="Search..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							className="pl-8"
 						/>
 					</div>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="overflow-x-auto">
 					<Table>
 						<TableHeader>
 							<TableRow>
@@ -140,13 +143,17 @@ export default function AdminDashboard() {
 						<TableBody>
 							{filteredUsers.map((user) => (
 								<TableRow key={user.uuid}>
-									<TableCell>{user.username}</TableCell>
-									<TableCell>{user.email}</TableCell>
-									<TableCell className="flex items-center gap-2">
+									<TableCell className="whitespace-nowrap">
+										{user.username}
+									</TableCell>
+									<TableCell className="whitespace-nowrap">
+										{user.email}
+									</TableCell>
+									<TableCell className="whitespace-nowrap">
 										<Input
 											type="number"
 											value={user.elo}
-											className="w-20"
+											className="w-16 sm:w-20"
 											onChange={(e) => {
 												const newElo = parseInt(
 													e.target.value
@@ -159,43 +166,36 @@ export default function AdminDashboard() {
 											}}
 										/>
 									</TableCell>
-									<TableCell>{user.wins}</TableCell>
-									<TableCell>{user.draws}</TableCell>
-									<TableCell>{user.losses}</TableCell>
-									<TableCell className="flex items-center gap-2">
-										<Button
-											variant={
-												user.banned
-													? "outline"
-													: "destructive"
-											}
-											onClick={() => {
-												banUser(user.id, user.banned);
-											}}
-											className=""
-										>
-											{user.banned ? (
-												<>
-													<UserCheck className="h-4 w-4 mr-2" />
-													Unban
-												</>
-											) : (
-												<>
-													<Gavel className="h-4 w-4 mr-2" />
-													Ban
-												</>
-											)}
-										</Button>
-										<Button
-											variant="outline"
-											onClick={() =>
-												router.push(
-													`/profile/${user.uuid}`
-												)
-											}
-										>
-											<Link className="h-4 w-4" />
-										</Button>
+									<TableCell className="whitespace-nowrap">
+										{user.wins}
+									</TableCell>
+									<TableCell className="whitespace-nowrap">
+										{user.draws}
+									</TableCell>
+									<TableCell className="whitespace-nowrap">
+										{user.losses}
+									</TableCell>
+									<TableCell className="whitespace-nowrap">
+										<div className="flex items-center gap-2">
+											<BanDialog
+												userId={user.id}
+												isBanned={user.banned}
+												banReason={user.banReason}
+												banExpires={user.banExpires} // Changed from banExpires to banExpiresAt to match component prop
+												onBanComplete={fetchUsers}
+											/>
+											<Button
+												size="sm"
+												variant="outline"
+												onClick={() =>
+													router.push(
+														`/profile/${user.uuid}`
+													)
+												}
+											>
+												<Link className="h-4 w-4" />
+											</Button>
+										</div>
 									</TableCell>
 								</TableRow>
 							))}

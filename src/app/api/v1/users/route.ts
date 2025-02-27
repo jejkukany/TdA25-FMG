@@ -72,6 +72,8 @@ export async function GET() {
 				draws: user.draws,
 				losses: user.losses,
 				banned: user.banned,
+				banReason: user.banReason,
+				banExpires: user.banExpires,
 			})
 			.from(user);
 

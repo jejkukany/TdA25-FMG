@@ -31,7 +31,6 @@ const menuItems = [
 const SideBar = () => {
 	const { state, isMobile } = useSidebar();
 	const pathname = usePathname();
-
 	return (
 		<Sidebar
 			className="border-r bg-[#262421] flex flex-col overflow-hidden"
@@ -98,12 +97,12 @@ const SideBar = () => {
 										<SidebarMenuButton
 											asChild
 											variant="outline"
-											className={cn(
-												"w-full flex flex-row items-center h-12 justify-center",
-												"/" + pathname.split("/")[1] ===
-													item.href &&
-													"bg-accent text-accent-foreground border-none"
-											)}
+											size={"lg"}
+											isActive={
+												pathname.split("/")[1] ===
+												item.href.split("/")[1]
+											}
+											className="w-full flex flex-row items-center h-12 justify-center data-[active=true]:bg-primary/20 data-[active=true]:shadow-primary/50 data-[active=true]:text-primary"
 										>
 											<a>
 												<item.icon
