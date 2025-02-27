@@ -14,9 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Shield, Gavel, Link } from "lucide-react";
+import { Shield, Link } from "lucide-react";
 import { Search } from "lucide-react";
-import { UserCheck } from "lucide-react";
 import { BanDialog } from "@/components/custom/admin/BanDialog";
 
 interface User {
@@ -68,18 +67,6 @@ export default function AdminDashboard() {
 		} catch (error) {
 			console.error("Failed to fetch users:", error);
 		}
-	};
-	const banUser = async (id: string, banned: boolean) => {
-		if (!banned) {
-			await client.admin.banUser({
-				userId: id,
-			});
-		} else {
-			await client.admin.unbanUser({
-				userId: id,
-			});
-		}
-		fetchUsers();
 	};
 	const updateUser = async (uuid: string, data: Partial<User>) => {
 		try {

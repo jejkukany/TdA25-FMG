@@ -7,7 +7,6 @@ import { Trophy, Target, MinusCircle, Minus, Pencil } from "lucide-react";
 import Link from "next/link";
 import { MatchHistory } from "@/components/custom/profile/MatchHistory";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Profile() {
 	const { data: data, isPending } = client.useSession();
