@@ -154,3 +154,37 @@ export const hasPotentialWin = (board: string[][], symbol: string): boolean => {
 
   return false;
 };
+
+export interface EloResult {
+    player1: number;
+    player2: number;
+}
+
+export function calculateElo(elo1: number, elo2: number, winner: 1 | 2): EloResult {
+    const K = 40;
+    const scale = 400;
+
+    // Expected scores
+    const expected1 = 1 / (1 + Math.pow(10, (elo2 - elo1) / scale));
+    const expected2 = 1 - expected1;
+
+    // Actual scores
+    let actual1 = 0.5;
+    let actual2 = 0.5;
+    if (winner === 1) {
+        actual1 = 1;
+        actual2 = 0;
+    } else if (winner === 2) {
+        actual1 = 0;
+        actual2 = 1;
+    }
+
+    // Calculate Elo changes (classical formula)
+    const delta1 = K * (actual1 - expected1);
+    const delta2 = K * (actual2 - expected2);
+
+    return {
+        player1: Math.round(elo1 + delta1),
+        player2: Math.round(elo2 + delta2)
+    };
+}
