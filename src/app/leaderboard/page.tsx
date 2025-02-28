@@ -110,15 +110,31 @@ export default function Leaderboard() {
 						<Table>
 							<TableHeader>
 								<TableRow>
-                                  <TableHead className="w-16 text-right pr-8">Rank</TableHead>
-                                  <TableHead className="w-[30%] pl-4">Player</TableHead>
-                                  <TableHead className="text-right w-[100px] pr-8">ELO</TableHead>
-                                  <TableHead className="text-right w-[100px] pr-8">Win Rate</TableHead>
-                                  <TableHead className="text-right w-[80px] pr-8">W</TableHead>
-                                  <TableHead className="text-right w-[80px] pr-8">D</TableHead>
-                                  <TableHead className="text-right w-[80px] pr-8">L</TableHead>
-                                  <TableHead className="text-right w-[100px] pr-8">Games</TableHead>
-                                </TableRow>
+									<TableHead className="w-16 text-right pr-8">
+										Rank
+									</TableHead>
+									<TableHead className="w-[30%] pl-4">
+										Player
+									</TableHead>
+									<TableHead className="text-right w-[100px] pr-8">
+										ELO
+									</TableHead>
+									<TableHead className="text-right w-[100px] pr-8">
+										Win Rate
+									</TableHead>
+									<TableHead className="text-right w-[80px] pr-8">
+										Wins
+									</TableHead>
+									<TableHead className="text-right w-[80px] pr-8">
+										Draws
+									</TableHead>
+									<TableHead className="text-right w-[80px] pr-8">
+										Losses
+									</TableHead>
+									<TableHead className="text-right w-[100px] pr-8">
+										Games
+									</TableHead>
+								</TableRow>
 							</TableHeader>
 							<TableBody>
 								{filteredUsers.map((user, index) => {

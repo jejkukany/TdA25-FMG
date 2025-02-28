@@ -2,7 +2,14 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import { PlayCircle, Home, Trophy, Puzzle } from "lucide-react";
+import {
+	PlayCircle,
+	Home,
+	Trophy,
+	Puzzle,
+	Handshake,
+	Medal,
+} from "lucide-react";
 import {
 	Sidebar,
 	SidebarContent,
@@ -24,6 +31,8 @@ import { UserMenu } from "./UserMenu";
 const menuItems = [
 	{ icon: Home, label: "Home", href: "/" },
 	{ icon: PlayCircle, label: "Local Play", href: "/game" },
+	{ icon: Handshake, label: "Freeplay", href: "/freeplay" },
+	{ icon: Medal, label: "Ranked", href: "/ranked" },
 	{ icon: Puzzle, label: "Puzzles", href: "/games" },
 	{ icon: Trophy, label: "Leaderboard", href: "/leaderboard" },
 ];

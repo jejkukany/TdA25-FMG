@@ -44,7 +44,14 @@ export default async function RootLayout({
 	children: React.ReactNode;
 }>) {
 	const cookieStore = await cookies();
-	const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
+
+	const defaultOpen =
+		(cookieStore.get("sidebar:state")?.value === undefined
+			? "true"
+			: "false") === "true";
+
+	//check and log if the cookie exsists
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={`${dosis.variable} antialiased`}>
