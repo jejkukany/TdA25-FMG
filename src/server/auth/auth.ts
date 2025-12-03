@@ -48,5 +48,8 @@ export const auth = betterAuth({
       enabled: true,
     },
   },
-  trustedOrigins: ["https://13682ac4.app.deploy.tourde.app"],
+  trustedOrigins: [
+    "https://13682ac4.app.deploy.tourde.app",
+    "http://170.187.202.22:3000/",
+  ],
 });
