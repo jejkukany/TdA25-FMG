@@ -1,8 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/index";
-import { admin, username } from "better-auth/plugins";
-import type { BetterAuthPlugin } from "better-auth";
+import { admin, username, type BetterAuthPlugin } from "better-auth/plugins";
 
 export const userStatsPlugin = () => {
   return {
